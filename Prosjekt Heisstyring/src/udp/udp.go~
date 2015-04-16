@@ -1,6 +1,6 @@
-// go run networkUDP.go
+// go run networkUDP.cd ..go
 package udp
-import (. "fmt" // Using '.' to avoid prefixing functions with their package names
+import (."fmt" // Using '.' to avoid prefixing functions with their package names
 		// This is probably not a good idea for large projects...
 	//"runtime"
 	"time"
@@ -9,6 +9,8 @@ import (. "fmt" // Using '.' to avoid prefixing functions with their package nam
 	"os"
 	"strconv"
 	"driver"
+	//"sort"
+	"encoding/json"
 )
 
 
@@ -18,19 +20,27 @@ type Status struct {
 	NextFloor int
 	Primary bool
 	ID int
-	Button int
+	//PrimaryQ [3]string
+	CommandList []int
+	UpList []int  // slice = slice[:0] for å tømme slicen når sendt til primary
+	DownList[]int // slice = slice[:0] for å tømme slicen når sendt til primary
+	//PriList[]int
+	OrderList []int // sjekke for nye ordrer når primary sender
 }
 
-type Data2 struct {
-	Teller int
+type Data struct {
+	Status Status
+	Statuses []Status // Oppdatere den her å i UdpInit()
+	PrimaryQ []int
 }
 
-func SetStatus(Status *Status, running int, NextFloor int, Button int) {
-	(*Status).Running = running
-	(*Status).CurrentFloor = driver.GetFloorSensorSignal()
-	(*Status).NextFloor = NextFloor
-	(*Status).Button = Button
-	(*Status).ID = GetID()
+
+func SetStatus(Data *Data, running int, NextFloor int) {
+	ID := GetID()
+	(*Data).Status.Running = running
+	(*Data).Status.CurrentFloor = driver.GetFloorSensorSignal()
+	(*Data).Status.NextFloor = NextFloor
+	(*Data).Status.ID = ID
 	//Println(" id i func:", (*Status).ID)
 }
 func GetID() int {
@@ -41,7 +51,6 @@ func GetID() int {
 	}
  	var ipAddr string
 	for _, a := range addrs {
-		
 		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
 			if ipnet.IP.To4() != nil {
 				ipAddr = ipnet.IP.String()
@@ -53,47 +62,89 @@ func GetID() int {
 }
 
 
-func listen() {
-	buffer := make([]byte, 1024)
-	udpAddr, err := net.ResolveUDPAddr("udp", ":32222")
-	conn, err := net.ListenUDP("udp", udpAddr)
-	checkError(err)
-	for {
-		Println("Hører")
-		n,err := conn.Read(buffer)
-		checkError(err)
-		Printf("Rcv %d bytes: %s\n",n, buffer)
-	}	
-}
+/////////// Primary functions ////////////
 
-
-func send(ip []byte) { // data []byte
-	udpAddr, err := net.ResolveUDPAddr("udp", string(ip[:21]))
-	checkError(err)
-	conn, err := net.DialUDP("udp", nil, udpAddr)
+func PrimaryBroadcast(baddr *net.UDPAddr, Data *Data) { // data []byte
+	//udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187.255:39998")
+	//checkError(err)
+	bconn, err := net.DialUDP("udp", nil, baddr)
 	checkError(err)
 	for {
 		Println("SENDER")
-		//buffer = nil
-		time.Sleep(1000*time.Millisecond)
+		time.Sleep(2500*time.Millisecond)
 		
 		// WRITE
-		//Println("Er du der server??")
-		_, err := conn.Write([]byte("fetbmwazz\n")) // \x00
+		b,_ := json.Marshal(Data)
+		bconn.Write(b)
+		
 		checkError(err)
 	}
 
 }
 
+func PrimaryListen(data *Data) {
+	buffer := make([]byte, 1024)
+	var temp Data
+	udpAddr, err := net.ResolveUDPAddr("udp", ":39998")
+	conn, err := net.ListenUDP("udp", udpAddr)
+	checkError(err)
+	for {		
+		n, err := conn.Read(buffer)
+		checkError(err)
+		//Data = buffer
+		err = json.Unmarshal(buffer[0:n], temp)		
+		(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
+	}
+}
+
+/////////// Slave functions //////////// 
+
+func ListenForPrimary(bconn *net.UDPConn, Data *Data) { // Bruke chan muligens fordi den skal skrive til Data
+	buffer := make([]byte, 1024)
+	//udpAddr, err := net.ResolveUDPAddr("udp", ":39998")
+	//conn, err := net.ListenUDP("udp", udpAddr)
+	//checkError(err)
+	for {
+		Println("Hører")
+		bconn.SetReadDeadline(time.Now().Add(5*time.Second))		
+		n, err := bconn.Read(buffer)
+		checkError(err)
+		//Data = buffer
+		err = json.Unmarshal(buffer[0:n], Data)		
+		Println("her er primaryQen:", Data.PrimaryQ)		
+		// Printf("Rcv %d bytes: %s\n",n, buffer)	
+	}	
+}
+
+
+
+func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endringar
+	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+ strconv.Itoa((*data).PrimaryQ[0]) + ":39998")
+	conn, err := net.DialUDP("udp",nil, udpAddr)
+	checkError(err)
+	for {
+		time.Sleep(2500*time.Millisecond) // bytte til bare ved endringar etterhvert
+
+		 //WRITE
+		b,_ := json.Marshal(data)
+		conn.Write(b)	
+		checkError(err)
+	}
+}
+
 // send_ch, receive_ch chan Udp_message
-func UdpInit(localListenPort int, broadcastListenPort int, message_size int, Status *Status) (err error) {
+func UdpInit(localListenPort int, broadcastListenPort int, message_size int, data *Data) (err error) {
 	buffer := make([]byte, message_size)
-	(*Status).Primary = false
-	SetStatus(Status,0,driver.GetFloorSensorSignal())	
+	var temp Data
+
+	//(*Status).Primary = false
+	(*data).Status.Primary = false	
+	SetStatus(data,0,driver.GetFloorSensorSignal())	
 	//InitStatus(*Status)
 	//Println("SE HER::::: ", (Status).ID)
+	
 	//Generating broadcast address
-	baddr, err = net.ResolveUDPAddr("udp4", "255.255.255.255:"+strconv.Itoa(broadcastListenPort))
+	baddr, err = net.ResolveUDPAddr("udp4", "129.241.187.255:"+strconv.Itoa(broadcastListenPort))
 	if err != nil {
 		return err
 	}
@@ -123,11 +174,21 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, Sta
 
 	//Setting first primary
 	broadcastListenConn.SetReadDeadline(time.Now().Add(3*time.Second))
-	_, err = broadcastListenConn.Read(buffer)
-	if err != nil{
+	n, err := broadcastListenConn.Read(buffer)
+	if err != nil {
 		Println("Tar over som primary!")
-		(*Status).Primary = true	
+		(*data).Status.Primary = true
+		(*data).PrimaryQ = append((*data).PrimaryQ, GetID()) 
+		go PrimaryBroadcast(baddr,data)
+		//go PrimaryListen()	
+	} else {
+		err = json.Unmarshal(buffer[0:n], temp)
+		(*data).PrimaryQ = temp.PrimaryQ	
+		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
+		go ListenForPrimary(broadcastListenConn, data)
+		go SlaveUpdate(data)
 	}
+	
 
 
 	//	fmt.Printf("Generating local address: \t Network(): %s \t String(): %s \n", laddr.Network(), laddr.String())
@@ -181,8 +242,14 @@ func checkError(err error) {
 	}
 }
 
-
-
+func GetIndex(ID int, data *Data) int { 
+	for i:=0;i<len(data.PrimaryQ);i++ {
+		if PrimaryQ[i] == ID {
+			return i
+		}
+	}
+	return -1
+}
 
 
 
