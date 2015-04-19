@@ -13,11 +13,15 @@ import (
 func main() {
 	
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	fmt.Println(udp.GetID())	
-	floorChan := make(chan int)
+	
+	fmt.Println(udp.GetID())
+		
+	//floorChan := make(chan int)
 	//var Status udp.Status
-	var Data udp.Data	
+	var Data udp.Data
+	PrimaryChan := make(chan int)
+	SlaveChan := make(chan int)	
+
 	//Data := make(map[int]udp.Status)
 	//var PrimaryQ [3]string
 
@@ -31,22 +35,24 @@ func main() {
 		return
 	}
 		
+	//PrimaryChan<- 1
+	//SlaveChan<-1
+		
+	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	//go control.ElevatorControl(&Data)
 	
 	
-	test := Data.Statuses[Data.PrimaryQ[0]]
-	delete(Data.Statuses, Data.PrimaryQ[0])
-	var tmp = Data.Statuses[Data.PrimaryQ[0]]
-	PrintStatus(Data.Statuses[153])
-	test.OrderList = append(test.OrderList,1)
-	tmp = test
-	Data.Statuses[Data.PrimaryQ[0]] = tmp
+	for {
+		select {
+			case <-PrimaryChan:
+			
+			case <-SlaveChan:
+		}
+	}
+	
 
 	
-	//Data.Statuses[Data.PrimaryQ[0]].OrderList = append(Data.Statuses[Data.PrimaryQ[0]].OrderList,test.OrderList...)
-	PrintStatus(Data.Statuses[Data.PrimaryQ[0]])
-	//fmt.Println(Data.PrimaryQ[0])
-	//PrintStatus(Data.Statuses[Data.PrimaryQ[0]])
-	//Data.Statuses[Data.PrimaryQ[0]] = test
+	
 	
 	
 	fmt.Println("Press STOP button to stop elevator and exit program.")
@@ -59,9 +65,10 @@ func main() {
 		
 	//go control.GoToFloor(2,floorChan,&Data)
 	
+	/*
 	for {
-		_, temp := control.GetCommand()
-		floorChan<- temp
+		//_, temp := control.GetCommand()
+		//floorChan<- temp
 		//PrintStatus(Data.Status)
 		fmt.Println("Stop signal pressed ", driver.GetStopSignal())
 		if driver.GetStopSignal() != 0 {
@@ -71,6 +78,7 @@ func main() {
 		}
 	
 	}
+	*/
 }		 
 
 func PrintStatus(Status udp.Status) {
