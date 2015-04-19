@@ -13,40 +13,52 @@ import (
 func main() {
 	
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	
+
 	fmt.Println(udp.GetID())
 		
 	//floorChan := make(chan int)
 	//var Status udp.Status
 	var Data udp.Data
 	PrimaryChan := make(chan int)
-	SlaveChan := make(chan int)	
+	SlaveChan := make(chan int)
+	//go udp.ChannelFunc(PrimaryChan)
+		
 
 	//Data := make(map[int]udp.Status)
 	//var PrimaryQ [3]string
 
-	udp.UdpInit(30169, 39998, 1024, &Data)
+	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan)
+	fmt.Println("Ferdig med å initialisere")
 	//Status.ID = udp.GetID()	
 	fmt.Println("Getfloor", driver.GetFloorSensorSignal())	
-
 
 	if driver.InitElevator() == 0 {
 		fmt.Println("Unable to initialize elevator hardware!")
 		return
 	}
 		
-	PrimaryChan<- 1
-	SlaveChan<-1
+	//PrimaryChan<- 1
+	//SlaveChan<-1
 		
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
-	//go control.ElevatorControl(&Data)
+	go control.ElevatorControl(&Data)
+	go control.CostFunction(&data)
 	
 	
 	for {
+		//fmt.Println("for loop")
 		select {
 			case <-PrimaryChan:
-			
+				if len(Data.PrimaryQ)  > 1{
+					temp := control.SortUp(Data.PrimaryQ[1:])
+					Data.PrimaryQ = Data.PrimaryQ[:1]
+					Data.PrimaryQ = append(Data.PrimaryQ, temp...)
+					fmt.Println(Data.PrimaryQ)
+				}
 			case <-SlaveChan:
+			
+			default:
+				//fmt.Println("default case")
 		}
 	}
 	

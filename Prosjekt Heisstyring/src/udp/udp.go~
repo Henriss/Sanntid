@@ -11,6 +11,7 @@ import (."fmt" // Using '.' to avoid prefixing functions with their package name
 	"driver"
 	//"sort"
 	"encoding/json"
+
 )
 
 
@@ -98,16 +99,22 @@ func SendOrderlist(data *Data) { // IMALIVE
 	checkError(err)
 }
 
-func PrimaryListen(data *Data) {
+func PrimaryListen(data *Data, PrimaryChan chan int) {
 	buffer := make([]byte, 1024)
+	var temp Data
 	udpAddr, err := net.ResolveUDPAddr("udp", ":39999")
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
-	for {		
+	for {	
+		Println("HØRER")	
 		n, err := conn.Read(buffer)
 		checkError(err)
 		//Data = buffer
-		err = json.Unmarshal(buffer[0:n], data)		
+		err = json.Unmarshal(buffer[0:n], temp)
+		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != data.PrimaryQ[len(temp.PrimaryQ)-1] {
+			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ[1:]...)
+			PrimaryChan<- 1
+		} 	
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 	}
 }
@@ -123,11 +130,11 @@ func ListenForPrimary(bconn *net.UDPConn, Data *Data, PrimaryChan chan int, Slav
 		Println("Hører")
 		bconn.SetReadDeadline(time.Now().Add(5*time.Second))		
 		n, err := bconn.Read(buffer)
-		if err != nil && PrimaryQ[1] == GetID() {
+		if err != nil && Data.PrimaryQ[1] == GetID() {
 			Println("Mottar ikke meldinger fra primary lenger, tar over")
-			primaryChan<- 1
-			Data.PrimaryQ = control.UpdateList(Data.PrimaryQ,0)
-			SendOrderList(Data, 
+			Data.PrimaryQ = UpdateList(Data.PrimaryQ,0)
+			SendOrderlist(Data)
+			PrimaryChan<- 1
 			break
 		}
 		//Data = buffer
@@ -204,9 +211,11 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 		(*data).Statuses = append((*data).Statuses, status)
 		(*data).Statuses[GetIndex(GetID(), data)].Primary = true
+		//PrimaryChan <- 1
+		go ChannelFunc(PrimaryChan)
 		go PrimaryBroadcast(baddr,data)
-		go PrimaryListen(data)
-		PrimaryChan<- 1	
+		go PrimaryListen(data, PrimaryChan)
+	
 	} else {
 		err = json.Unmarshal(buffer[0:n], temp)
 		(*data).PrimaryQ = temp.PrimaryQ
@@ -214,9 +223,11 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		(*data).Statuses = temp.Statuses
 		(*data).Statuses = append((*data).Statuses, status)	
 		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
-		go ListenForPrimary(broadcastListenConn, data)
+		//SlaveChan<- 1
+		go ChannelFunc(SlaveChan)		
+		go ListenForPrimary(broadcastListenConn, data,PrimaryChan, SlaveChan)
 		go SlaveUpdate(data)
-		SlaveChan<- 1
+		
 	}
 	
 
@@ -281,8 +292,24 @@ func GetIndex(ID int, data *Data) int {
 	return -1
 }
 
+func UpdateList(OrderList []int, j int) []int {
+	temp := make([]int, len(OrderList)-1)
+	for i:= 0; i<len(OrderList);i++ {
+		if i<j {
+			temp[i] = OrderList[i]
+		} else if i>j {
+			temp[i-1] = OrderList[i]
+		}
+	}
+	return temp
+}
 
 
+func ChannelFunc(Channel chan int) {
+	Println("Tsst1")
+	Channel <-1
+	Println("Tsst2")
+}
 
 
 
