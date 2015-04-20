@@ -12,37 +12,37 @@ import (
 
 func main() {
 	
+	var list []int
+	var list2 []int
+	list = append(list, list2...)
+
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	fmt.Println(udp.GetID())
 		
 	//floorChan := make(chan int)
-	//var Status udp.Status
 	var Data udp.Data
 	PrimaryChan := make(chan int)
 	SlaveChan := make(chan int)
-	//go udp.ChannelFunc(PrimaryChan)
-		
-
-	//Data := make(map[int]udp.Status)
-	//var PrimaryQ [3]string
-
-	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan)
-	fmt.Println("Ferdig med å initialisere")
-	//Status.ID = udp.GetID()	
-	fmt.Println("Getfloor", driver.GetFloorSensorSignal())	
 
 	if driver.InitElevator() == 0 {
 		fmt.Println("Unable to initialize elevator hardware!")
-		return
+	return
 	}
+	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan)
+	fmt.Println("Ferdig med å initialisere")
+	fmt.Println("Currentfloor: ", Data.Statuses[udp.GetIndex(udp.GetID(),&Data)].CurrentFloor)
+	//Status.ID = udp.GetID()	
+	fmt.Println("Getfloor", driver.GetFloorSensorSignal())	
+
+
 		
 	//PrimaryChan<- 1
 	//SlaveChan<-1
 		
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
-	go control.ElevatorControl(&Data)
-	go control.CostFunction(&data)
+	go control.ElevatorControl(&Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	go control.CostFunction(&Data)
 	
 	
 	for {
