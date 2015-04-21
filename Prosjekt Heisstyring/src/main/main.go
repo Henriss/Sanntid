@@ -39,11 +39,12 @@ func main() {
 		
 	//PrimaryChan<- 1
 	//SlaveChan<-1
-		
+	fmt.Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),&Data))
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
 	go control.ElevatorControl(&Data.Statuses[udp.GetIndex(udp.GetID(),&Data)])
-	go control.CostFunction(&Data)
-	
+	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
+		go control.CostFunction(&Data)
+	}
 	
 	for {
 		//fmt.Println("for loop")
@@ -56,7 +57,7 @@ func main() {
 					fmt.Println(Data.PrimaryQ)
 				}
 			case <-SlaveChan:
-			
+				
 			default:
 				//fmt.Println("default case")
 		}

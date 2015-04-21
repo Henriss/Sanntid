@@ -186,13 +186,17 @@ func GetDestination(status *udp.Status) { //returnerer bare button, orderlist op
 				}else if driver.GetButtonSignal(0,floor) == 1 && len(status.UpList) > 0 {
 					if status.UpList[len(status.UpList)-1] != floor {
 						status.UpList = append(status.UpList,floor)
+						fmt.Println("status.UpList: ", status.UpList) 
 					}				
 				}else if driver.GetButtonSignal(1,floor) == 1 && len(status.DownList)==0 {	
 					status.DownList = append(status.DownList, floor)
 				}else if driver.GetButtonSignal(1,floor) == 1 && len(status.DownList) > 0 {
 					if status.DownList[len(status.DownList)-1] != floor {
 						status.DownList = append(status.DownList,floor)
+						fmt.Println("status.DownList: ", status.DownList)
 					}
+				}else if driver.GetButtonSignal(2,floor) == 1 && len(status.CommandList) == 0{
+						status.CommandList = append(status.CommandList,floor) 
 				}else if driver.GetButtonSignal(2,floor) == 1 && status.CommandList[0] == -1 {
 						status.CommandList[0] = floor
 				}else if driver.GetButtonSignal(2,floor) == 1 && len(status.CommandList) > 0 {
