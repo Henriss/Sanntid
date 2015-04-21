@@ -1,4 +1,4 @@
-package main
+go package main
 
 import ( 
 	"fmt"
@@ -41,7 +41,7 @@ func main() {
 	//SlaveChan<-1
 		
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
-	go control.ElevatorControl(&Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	go control.ElevatorControl(&Data.Statuses[udp.GetIndex(udp.GetID(),&Data)])
 	go control.CostFunction(&Data)
 	
 	
