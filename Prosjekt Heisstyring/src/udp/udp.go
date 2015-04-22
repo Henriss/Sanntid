@@ -52,6 +52,8 @@ func SetStatus(status *Status, running int, NextFloor int) {
 	*/
 }
 func GetID() int {
+	ut:=0
+	ut = ut +0
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
@@ -64,9 +66,14 @@ func GetID() int {
 				ipAddr = ipnet.IP.String()
 			}
 		}
-	} 
-	ut,_ := strconv.Atoi(ipAddr[12:15])
+	}
+	if len(ipAddr)==14{ 
+		ut,_ = strconv.Atoi(ipAddr[12:14])
+	}else{
+		ut,_ = strconv.Atoi(ipAddr[12:15])
+	}
 	return ut
+	
 }
 
 

@@ -8,17 +8,13 @@ import (
 	"runtime" 
 	//"net"
 	//"os"
-	"sort"
+	//"sort"
 )
 
 func main() {
-	temp := make([]int,2)
-	temp[0] = 0
-	temp[1] = -2
-	fmt.Println(temp)
-	sort.Ints(temp)
-	fmt.Println(temp)
-	fmt.Println(sort.SearchInts(temp,-1))
+	var streng string
+	streng = "heihoo"
+	fmt.Println("lengden på strengen: ",len(streng))
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
