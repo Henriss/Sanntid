@@ -88,7 +88,7 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 	bconn, err := net.DialUDP("udp", nil, baddr)
 	checkError(err)
 	for {
-		Println("SENDER")
+		//Println("SENDER")
 		// WRITE
 		b,_ := json.Marshal(data)
 		bconn.Write(b)
@@ -96,7 +96,7 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 		//Println("b: ", b)
 		//Println("PrimaryQ marshalled: ", len(temp.Statuses))
 		checkError(err)
-		time.Sleep(500*time.Millisecond)
+		time.Sleep(2500*time.Millisecond)
 	}
 
 }
@@ -124,7 +124,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
 		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != data.PrimaryQ[len(temp.PrimaryQ)-1] {
-			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ...)//PrimaryQ[1:]...)
+			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
 		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])

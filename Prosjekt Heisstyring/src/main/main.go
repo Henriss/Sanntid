@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-
+	fmt.Println("FINN ET BEDRE STED FOR RUNNING=0 I MORRA")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	fmt.Println(udp.GetID())

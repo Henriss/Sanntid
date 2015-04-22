@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-
+	fmt.Println("FINN ET BEDRE STED FOR RUNNING=1 I MORRA")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	fmt.Println(udp.GetID())
@@ -27,7 +27,7 @@ func main() {
 		fmt.Println("Unable to initialize elevator hardware!")
 	return
 	}
-	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan)
+	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan, SortChan)
 	fmt.Println("Ferdig med å initialisere")
 	fmt.Println("lengden til Currentfloor: ", len(Data.Statuses))
 	fmt.Println("GetINDEX: ",udp.GetIndex(udp.GetID(),&Data))
