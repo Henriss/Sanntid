@@ -400,6 +400,7 @@ func CostFunction(data *udp.Data) {
 
 for up:=0; up<len(UpList);up++ {
 		fmt.Println("Up: ",up)
+		fmt.Println(data.PrimaryQ)
 		handled = 0
 		for i := 0; i < len(data.PrimaryQ) && handled == 0; i++ {
 			if UpList[up] == data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].CurrentFloor && data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].Running == 0 {

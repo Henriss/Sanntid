@@ -236,8 +236,8 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	
 	} else {
 		err = json.Unmarshal(buffer[0:n], data)
-		t
-		if(!CheckList((*data).PrimaryQ,GetID()) {
+		
+		if !(CheckList((*data).PrimaryQ,GetID())){
 			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 			(*data).Statuses = append((*data).Statuses, status)
 		}
@@ -357,7 +357,7 @@ func SortUp(UpList []int)  []int{ //Sorterer listen UpList i stigende rekkefølg
 	return temp
 }
 func CheckList(list []int, check int) bool{ // Sjekker om listen list inneholder heltallet check
-	for(i:=0;i<len(list);i++){
+	for i:=0;i<len(list);i++{
 		if(list[i] == check){
 			return true
 		}
