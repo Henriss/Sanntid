@@ -266,13 +266,18 @@ func CostFunction(data *udp.Data) {
 		}
 	}*/
 	for k := 0; k < len(data.PrimaryQ);k++ {
-		DownList = append(DownList,data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList...)
-		data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList = data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList[:0]
+		if udp.GetIndex(data.PrimaryQ[k],data) != -1 {
+			DownList = append(DownList,data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList...)
+			data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList = data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList[:0]
+		}
 	}
 	
+	
 	for l := 0; l < len(data.PrimaryQ);l++ {
-		UpList = append(UpList,data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList...)
-		data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList = data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList[:0]
+		if 	udp.GetIndex(data.PrimaryQ[l],data) != -1 {
+			UpList = append(UpList,data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList...)
+			data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList = data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList[:0]
+		}
 	}
 	//fmt.Println("control 258: Up List i cost function: ", UpList)
 	//fmt.Println("control 259: Down List i cost function: ", DownList)
