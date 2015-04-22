@@ -31,6 +31,8 @@ type Status struct {
 
 type Data struct {
 	//Status Status
+	//Timestamp???????
+	ID int
 	Statuses []Status // Oppdatere den her å i UdpInit()
 	PrimaryQ []int
 }
@@ -53,7 +55,6 @@ func SetStatus(status *Status, running int, NextFloor int) {
 }
 func GetID() int {
 	ut:=0
-	ut = ut +0
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
@@ -125,7 +126,7 @@ func PrimaryListen(data *Data, PrimaryChan chan int) {
 			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ[1:]...)
 			PrimaryChan<- 1
 		}else{
-			data = temp
+			data.Statuses[temp.ID] = temp.Statuses[temp.ID]
 		}
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 	}
@@ -239,7 +240,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//SlaveChan<- 1
 		go ChannelFunc(SlaveChan)		
 		go SlaveUpdate(data)
-		time.Sleep(2500*time.Millisecond)
+		time.Sleep(2500*time.Millisecond) // Vente for å la Primary oppdatere PrimaryQen
 		go ListenForPrimary(broadcastListenConn, data,PrimaryChan, SlaveChan)
 	}
 	

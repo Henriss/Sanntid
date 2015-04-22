@@ -79,7 +79,7 @@ func GoToFloor(button int,  floorChan chan int,data *udp.Data) {
 }
 */
 func GoToFloor(floor int) {
-	
+	fmt.Println("control 82: går til floor floor:",floor)
 	for {
 		driver.SetFloorIndicator(driver.GetFloorSensorSignal())
 		if floor == driver.GetFloorSensorSignal() {
@@ -106,7 +106,7 @@ func ElevatorControl(status *udp.Status){
 			status.CurrentFloor = driver.GetFloorSensorSignal()
 		}
 		//fmt.Println(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].CurrentFloor) 
-		fmt.Println("control 109: OrderList",status.OrderList)
+		//fmt.Println("control 109: OrderList",status.OrderList)
 		//time.Sleep(1*time.Second)
 		if len(status.OrderList) == 0 && len(status.CommandList) == 0 {
 			status.Running = 0

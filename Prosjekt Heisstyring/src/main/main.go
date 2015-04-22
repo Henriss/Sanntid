@@ -12,9 +12,6 @@ import (
 )
 
 func main() {
-	var streng string
-	streng = "heihoo"
-	fmt.Println("lengden på strengen: ",len(streng))
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
