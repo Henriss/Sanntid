@@ -127,14 +127,14 @@ func PrimaryListen(data *Data, SortChan chan int) {
 			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
-		data.Statuses[temp.ID] = temp.Statuses[temp.ID]
+		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 	}
 }
 
 /////////// Slave functions //////////// 
 
-func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, PrimaryChan chan int, SlaveChan chan int) { // Bruke chan muligens fordi den skal skrive til Data
+func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, PrimaryChan chan int, SortChan chan int) { // Bruke chan muligens fordi den skal skrive til Data
 	buffer := make([]byte, 1024)
 	//udpAddr, err := net.ResolveUDPAddr("udp", ":39998")
 	//conn, err := net.ListenUDP("udp", udpAddr)
@@ -145,9 +145,10 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		n, err := bconn.Read(buffer)
 		if err != nil && data.PrimaryQ[1] == GetID() {
 			Println("Mottar ikke meldinger fra primary lenger, tar over")
-			data.PrimaryQ = UpdateList(data.PrimaryQ,0)
+			data.PrimaryQ = data.PrimaryQ[1:] // UpdateList(data.PrimaryQ,0)
 			data.Statuses = data.Statuses[1:]
 			go PrimaryBroadcast(baddr, data)
+			go PrimaryListen(data, SortChan)
 			// SendOrderlist(Data)
 			PrimaryChan<- 1
 			break
@@ -180,7 +181,7 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 }
 
 // send_ch, receive_ch chan Udp_message
-func UdpInit(localListenPort int, broadcastListenPort int, message_size int, data *Data, PrimaryChan chan int, SlaveChan chan int) (err error) {
+func UdpInit(localListenPort int, broadcastListenPort int, message_size int, data *Data, PrimaryChan chan int, SlaveChan chan int, SortChan chan int) (err error) {
 	buffer := make([]byte, message_size)
 	var status Status
 	//data.Statuses = append(data.Statuses, temp)
@@ -230,7 +231,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//PrimaryChan <- 1
 		//go ChannelFunc(PrimaryChan)
 		go PrimaryBroadcast(baddr,data)
-		go PrimaryListen(data, PrimaryChan)
+		go PrimaryListen(data, SortChan)
 		
 		
 	
@@ -251,7 +252,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		go ChannelFunc(SlaveChan)		
 		go SlaveUpdate(data)
 		time.Sleep(2500*time.Millisecond) // Vente for å la Primary oppdatere PrimaryQen
-		go ListenForPrimary(broadcastListenConn, baddr, data,PrimaryChan, SlaveChan)
+		go ListenForPrimary(broadcastListenConn, baddr, data,PrimaryChan, SortChan)
 	}
 	
 

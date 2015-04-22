@@ -27,11 +27,12 @@ func main() {
 		fmt.Println("Unable to initialize elevator hardware!")
 	return
 	}
-	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan)
+	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan, SortChan)
 	fmt.Println("Ferdig med å initialisere")
 	fmt.Println("lengden til Currentfloor: ", len(Data.Statuses))
 	fmt.Println("GetINDEX: ",udp.GetIndex(udp.GetID(),&Data))
-	fmt.Println("Currentfloor: ", Data.Statuses[udp.GetIndex(udp.GetID(),&Data)].CurrentFloor)
+	//fmt.Println("Currentfloor: ", Data.Statuses[udp.GetIndex(udp.GetID(),&Data)].CurrentFloor)
+	fmt.Println("Test: ", udp.GetIndex(udp.GetID(),&Data))
 	fmt.Println("Currentfloor[0]: ", Data.Statuses[0].CurrentFloor)
 	//Status.ID = udp.GetID()	
 	fmt.Println("Getfloor", driver.GetFloorSensorSignal())	
@@ -46,7 +47,7 @@ func main() {
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
 		go control.CostFunction(&Data)
 	}
-	
+
 	for {
 		fmt.Println("for loop")
 		select {
