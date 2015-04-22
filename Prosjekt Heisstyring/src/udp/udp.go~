@@ -124,7 +124,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
 		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != data.PrimaryQ[len(temp.PrimaryQ)-1] {
-			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ[1:]...)
+			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ...)//PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
 		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])
@@ -237,7 +237,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	
 	} else {
 		err = json.Unmarshal(buffer[0:n], data)
-		Println("PrimaryQ før checklist: ", data.PrimaryQ]
+		Println("PrimaryQ før checklist: ", data.PrimaryQ)
 		if CheckList((*data).PrimaryQ,GetID()) == false{
 			Println("Funkar checklist?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())

@@ -266,7 +266,7 @@ func CostFunction(data *udp.Data) {
 		}
 	}*/
 	for k := 0; k < len(data.PrimaryQ);k++ {
-		if udp.GetIndex(data.PrimaryQ[k]) != -1 {
+		if udp.GetIndex(data.PrimaryQ[k],data) != -1 {
 			DownList = append(DownList,data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList...)
 			data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList = data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList[:0]
 		}
@@ -274,12 +274,12 @@ func CostFunction(data *udp.Data) {
 	
 	
 	for l := 0; l < len(data.PrimaryQ);l++ {
-		if 	udp.GetIndex(data.PrimaryQ[l]) != -1 {
+		if 	udp.GetIndex(data.PrimaryQ[l],data) != -1 {
 			UpList = append(UpList,data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList...)
 			data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList = data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList[:0]
 		}
 	}
-	//fmt.Println("control 258: Up List i cost function: ", UpList)
+	//fmt.Println("control 258: PrimaryQ i cost function: ", data.PrimaryQ)
 	//fmt.Println("control 259: Down List i cost function: ", DownList)
 	//time.Sleep(1*time.Second)
 	

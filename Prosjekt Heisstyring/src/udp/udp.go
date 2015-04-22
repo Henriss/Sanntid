@@ -124,7 +124,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
 		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != data.PrimaryQ[len(temp.PrimaryQ)-1] {
-			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ[1:]...)
+			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
 		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])

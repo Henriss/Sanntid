@@ -279,7 +279,7 @@ func CostFunction(data *udp.Data) {
 			data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList = data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList[:0]
 		}
 	}
-	//fmt.Println("control 258: Up List i cost function: ", UpList)
+	fmt.Println("control 258: PrimaryQ i cost function: ", data.PrimaryQ)
 	//fmt.Println("control 259: Down List i cost function: ", DownList)
 	//time.Sleep(1*time.Second)
 	
