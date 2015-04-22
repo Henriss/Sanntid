@@ -21,6 +21,7 @@ func main() {
 	var Data udp.Data
 	PrimaryChan := make(chan int)
 	SlaveChan := make(chan int)
+	SortChan := make(chan int)
 
 	if driver.InitElevator() == 0 {
 		fmt.Println("Unable to initialize elevator hardware!")
@@ -44,18 +45,21 @@ func main() {
 	}
 	
 	for {
-		//fmt.Println("for loop")
+		fmt.Println("for loop")
 		select {
 			case <-PrimaryChan:
-				if len(Data.PrimaryQ)  > 1{
-					temp := control.SortUp(Data.PrimaryQ[1:])
-					Data.PrimaryQ = Data.PrimaryQ[:1]
-					Data.PrimaryQ = append(Data.PrimaryQ, temp...)
-					fmt.Println(Data.PrimaryQ)
-				}
+					Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary = true
+					go control.CostFunction(&Data) 
 			case <-SlaveChan:
 				
-			default:
+			case <- SortChan:
+					if len(Data.PrimaryQ)  > 1{
+						temp := control.SortUp(Data.PrimaryQ[1:])
+						Data.PrimaryQ = Data.PrimaryQ[:1]
+						Data.PrimaryQ = append(Data.PrimaryQ, temp...)
+						fmt.Println(Data.PrimaryQ)
+					}
+			//default:
 				//fmt.Println("default case")
 		}
 	}

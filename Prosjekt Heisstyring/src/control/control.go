@@ -202,6 +202,7 @@ func GetDestination(status *udp.Status) { //returnerer bare button, orderlist op
 						fmt.Println("status.DownList: ", status.DownList)
 					}
 				}else if driver.GetButtonSignal(2,floor) == 1 && len(status.CommandList) == 0{
+						
 						status.CommandList = append(status.CommandList,floor) 
 				}else if driver.GetButtonSignal(2,floor) == 1  && status.CommandList[0] == -1 {
 						status.CommandList[0] = floor
@@ -257,7 +258,7 @@ func CostFunction(data *udp.Data) {
 	var DownList []int
 	var UpList []int
 	for {
-	fmt.Println("control 243, handled: ",handled)
+	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
 	/*if len(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList) > 0 {
 		if(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList[0] == -1){
@@ -273,8 +274,8 @@ func CostFunction(data *udp.Data) {
 		UpList = append(UpList,data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList...)
 		data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList = data.Statuses[udp.GetIndex(data.PrimaryQ[l], data)].UpList[:0]
 	}
-	fmt.Println("control 258: Up List i cost function: ", UpList)
-	fmt.Println("control 259: Down List i cost function: ", DownList)
+	//fmt.Println("control 258: Up List i cost function: ", UpList)
+	//fmt.Println("control 259: Down List i cost function: ", DownList)
 	//time.Sleep(1*time.Second)
 	
 	if len(UpList) > 0 {
