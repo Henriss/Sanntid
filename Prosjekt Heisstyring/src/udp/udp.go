@@ -95,7 +95,7 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 		//Println("b: ", b)
 		//Println("PrimaryQ marshalled: ", len(temp.Statuses))
 		checkError(err)
-		time.Sleep(2500*time.Millisecond)
+		time.Sleep(500*time.Millisecond)
 	}
 
 }
