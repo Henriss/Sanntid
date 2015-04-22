@@ -11,6 +11,7 @@ import (."fmt" // Using '.' to avoid prefixing functions with their package name
 	"driver"
 	//"sort"
 	"encoding/json"
+	"sort"
 
 )
 
@@ -181,7 +182,6 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 // send_ch, receive_ch chan Udp_message
 func UdpInit(localListenPort int, broadcastListenPort int, message_size int, data *Data, PrimaryChan chan int, SlaveChan chan int) (err error) {
 	buffer := make([]byte, message_size)
-	//var temp Data
 	var status Status
 	//data.Statuses = append(data.Statuses, temp)
 	status.Primary = false
@@ -232,13 +232,19 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		go PrimaryBroadcast(baddr,data)
 		go PrimaryListen(data, PrimaryChan)
 		
+		
 	
 	} else {
 		err = json.Unmarshal(buffer[0:n], data)
-		//(*data).PrimaryQ = temp.PrimaryQ
-		(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
+		t
+		if(!CheckList((*data).PrimaryQ,GetID()) {
+			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
+			(*data).Statuses = append((*data).Statuses, status)
+		}
+		
 		//(*data).Statuses = temp.Statuses
-		(*data).Statuses = append((*data).Statuses, status)	
+		
+		//(*data).PrimaryQ[1:] = SortUp((*data).PrimaryQ[1:])
 		Println("PrimaryQ: ", data.PrimaryQ)
 		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
 		//SlaveChan<- 1
@@ -328,7 +334,35 @@ func ChannelFunc(Channel chan int) {
 }
 
 
-
-
+func SortUp(UpList []int)  []int{ //Sorterer listen UpList i stigende rekkefølge og fjerner like tall og -1
+	sort.Ints(UpList)
+	temp := make([]int,1)
+	var minusen int
+	if(UpList[0]==-1){
+		temp[0] = UpList[1]
+		minusen  = 2
+	}else{
+		temp[0] = UpList[0]
+		minusen = 1
+	}
+	
+	
+	counter := 0
+	for i:= minusen;i<len(UpList); i++ {
+		if UpList[i] > temp[counter] {
+			counter ++
+			temp = append(temp,UpList[i])
+		}
+	}
+	return temp
+}
+func CheckList(list []int, check int) bool{ // Sjekker om listen list inneholder heltallet check
+	for(i:=0;i<len(list);i++){
+		if(list[i] == check){
+			return true
+		}
+	}
+	return false
+}
 
 
