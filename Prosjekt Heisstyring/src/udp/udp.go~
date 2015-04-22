@@ -228,7 +228,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		(*data).Statuses = append((*data).Statuses, status)
 		(*data).Statuses[GetIndex(GetID(), data)].Primary = true
 		//PrimaryChan <- 1
-		go ChannelFunc(PrimaryChan)
+		//go ChannelFunc(PrimaryChan)
 		go PrimaryBroadcast(baddr,data)
 		go PrimaryListen(data, PrimaryChan)
 		
