@@ -238,7 +238,8 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	} else {
 		err = json.Unmarshal(buffer[0:n], data)
 		
-		if !(CheckList((*data).PrimaryQ,GetID())){
+		if CheckList((*data).PrimaryQ,GetID()) == false{
+			Println("Funkar checklist?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 			(*data).Statuses = append((*data).Statuses, status)
 		}

@@ -145,7 +145,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		n, err := bconn.Read(buffer)
 		if err != nil && data.PrimaryQ[1] == GetID() {
 			Println("Mottar ikke meldinger fra primary lenger, tar over")
-			data.PrimaryQ = data.PrimayQ[1:] // UpdateList(data.PrimaryQ,0)
+			data.PrimaryQ = data.PrimaryQ[1:] // UpdateList(data.PrimaryQ,0)
 			data.Statuses = data.Statuses[1:]
 			go PrimaryBroadcast(baddr, data)
 			go PrimaryListen(data, SortChan)
@@ -239,6 +239,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		err = json.Unmarshal(buffer[0:n], data)
 		
 		if !(CheckList((*data).PrimaryQ,GetID())){
+			Println("Funkar checklist?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 			(*data).Statuses = append((*data).Statuses, status)
 		}
