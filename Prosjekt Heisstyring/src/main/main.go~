@@ -49,10 +49,6 @@ func main() {
 		select {
 			case <-PrimaryChan:
 					Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary = true
-					temp := control.SortUp(Data.PrimaryQ[1:])
-					Data.PrimaryQ = Data.PrimaryQ[:1]
-					Data.PrimaryQ = append(Data.PrimaryQ, temp...)
-					fmt.Println(Data.PrimaryQ)
 					go control.CostFunction(&Data) 
 			case <-SlaveChan:
 				

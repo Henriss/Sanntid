@@ -145,6 +145,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		if err != nil && data.PrimaryQ[1] == GetID() {
 			Println("Mottar ikke meldinger fra primary lenger, tar over")
 			data.PrimaryQ = UpdateList(data.PrimaryQ,0)
+			data.Statuses = data.Statuses[1:]
 			go PrimaryBroadcast(baddr, data)
 			// SendOrderlist(Data)
 			PrimaryChan<- 1

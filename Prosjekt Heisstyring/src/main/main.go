@@ -29,7 +29,9 @@ func main() {
 	}
 	udp.UdpInit(30169, 39998, 1024, &Data,PrimaryChan,SlaveChan)
 	fmt.Println("Ferdig med å initialisere")
+	fmt.Println("lengden til Currentfloor: ", len(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)].CurrentFloor))
 	fmt.Println("Currentfloor: ", Data.Statuses[udp.GetIndex(udp.GetID(),&Data)].CurrentFloor)
+	fmt.Println("Currentfloor[0]: ", Data.Statuses[udp.GetIndex(udp.GetID(),&Data)].CurrentFloor[0])
 	//Status.ID = udp.GetID()	
 	fmt.Println("Getfloor", driver.GetFloorSensorSignal())	
 
