@@ -8,13 +8,17 @@ import (
 	"runtime" 
 	//"net"
 	//"os"
+	"sort"
 )
 
 func main() {
-	
-	var list []int
-	var list2 []int
-	list = append(list, list2...)
+	temp := make([]int,2)
+	temp[0] = -1
+	temp[1] = -2
+	fmt.Println(temp)
+	sort.Ints(temp)
+	fmt.Println(temp)
+	fmt.Println(sort.SearchInts(temp,-1))
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
@@ -39,7 +43,7 @@ func main() {
 		
 	//PrimaryChan<- 1
 	//SlaveChan<-1
-	Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),&Data))
+	fmt.Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),&Data))
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
 	go control.ElevatorControl(&Data.Statuses[udp.GetIndex(udp.GetID(),&Data)])
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
