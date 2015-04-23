@@ -114,7 +114,7 @@ func SendOrderlist(data *Data,index int) { // IMALIVE
 
 func PrimaryListen(data *Data, SortChan chan int) {
 	buffer := make([]byte, 1024)
-	temp := *data
+	temp := data
 	udpAddr, err := net.ResolveUDPAddr("udp", ":39999")
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
