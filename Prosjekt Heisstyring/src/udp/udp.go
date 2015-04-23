@@ -26,7 +26,7 @@ type Status struct {
 	CommandList []int
 	UpList []int  // slice = slice[:0] for å tømme slicen når sendt til primary
 	DownList[]int // slice = slice[:0] for å tømme slicen når sendt til primary
-	//PriList[]int
+	ButtonList []int
 	OrderList []int // sjekke for nye ordrer når primary sender
 }
 
@@ -40,11 +40,11 @@ type Data struct {
 
 
 func SetStatus(status *Status, running int, NextFloor int) {
-	ID := GetID()
-	status.Running = running
-	status.CurrentFloor = driver.GetFloorSensorSignal()
-	status.NextFloor = NextFloor
-	status.ID = ID
+	(*status).ID := GetID()
+	(*status).Running = running
+	(*status).CurrentFloor = driver.GetFloorSensorSignal()
+	(*status).NextFloor = NextFloor
+	(*status).ID = ID
 	
 	/*
 	(*data).Statuses[GetIndex(GetID(), data)].Running = running
