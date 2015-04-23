@@ -89,7 +89,9 @@ func GoToFloor(floor int, status *udp.Status) {
 				driver.SetDoorOpenLamp(true)				
 				time.Sleep(2*time.Second)
 				driver.SetDoorOpenLamp(false)
-				
+				/*if floor == 0 || floor == 3 {
+					status.Running = 0
+				}*/
 				break
 		} else if floor > driver.GetFloorSensorSignal() && driver.GetFloorSensorSignal() != -1 && floor != -1 {   
 			driver.SetMotorDirection(driver.DIRN_UP) 
@@ -114,9 +116,7 @@ func ElevatorControl(status *udp.Status){
 		//fmt.Println(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].CurrentFloor) 
 		//fmt.Println("control 109: OrderList",status.OrderList)
 		//time.Sleep(1*time.Second)
-		if len(status.OrderList) == 0 && len(status.CommandList) == 0 {
-			status.Running = 0
-		}
+		
 		if len(status.CommandList) == 0 {
 			status.CommandList = append(status.CommandList, -1)
 		}
@@ -124,7 +124,10 @@ func ElevatorControl(status *udp.Status){
 			status.OrderList = append(status.OrderList, -1)
 			
 		}
-
+		if status.OrderList[0] == -1 && status.CommandList[0] == -1 {
+			
+			status.Running = 0
+		}
 		if len(status.OrderList) > 0 && len(status.CommandList)>0 {
 			if !(status.OrderList[0] == -1 && status.CommandList[0] ==-1){
 				//fmt.Println("OrderList: ", status.OrderList)
@@ -358,7 +361,7 @@ func CostFunction(data *udp.Data) {
 				fmt.Println("control 280: Heis i samma floor og står stille. Downlist:", DownList)
 				DownList = UpdateList(DownList,down) //Må modifiseres
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				
 				handled = 1
@@ -373,7 +376,7 @@ func CostFunction(data *udp.Data) {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = SortDown(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 				DownList = UpdateList(DownList,down)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data, i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -387,7 +390,7 @@ func CostFunction(data *udp.Data) {
 				fmt.Println("control 385: Heis i etasjen over og står stille")
 				DownList = UpdateList(DownList,down)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -400,7 +403,7 @@ func CostFunction(data *udp.Data) {
 				fmt.Println("control 398: Heis på vei nedover og er over floor. Downlist:", DownList)
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = SortDown(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -445,7 +448,7 @@ func CostFunction(data *udp.Data) {
 				}
 				DownList = UpdateList(DownList,down)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -473,7 +476,7 @@ for up:=0; up<len(UpList);up++ {
 				fmt.Println("control 387: heis i samme etasjen og står stille. UpList:", UpList)
 				UpList = UpdateList(UpList,up) //Må modifiseres
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -489,7 +492,7 @@ for up:=0; up<len(UpList);up++ {
 
 				UpList = UpdateList(UpList,up)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -504,7 +507,7 @@ for up:=0; up<len(UpList);up++ {
 				fmt.Println("control 417: heis i etasjen under og står stille. UpList:", UpList)
 				UpList = UpdateList(UpList,up)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -518,7 +521,7 @@ for up:=0; up<len(UpList);up++ {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].NextFloor = UpList[up]
 				UpList = UpdateList(UpList,up)
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
 				break 
@@ -559,8 +562,12 @@ for up:=0; up<len(UpList);up++ {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList,UpList[up])
 				
 				fmt.Println("control 473: heisen står stille. UpList:", UpList)
-				UpList = UpdateList(UpList,up)
+				
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].Running = 1
+				fmt.Println("Sjekker GetIndex: ", udp.GetIndex(data.PrimaryQ[i], data))
+				fmt.Println("Sjekker Statuses: ", len(data.Statuses))
+				fmt.Println("Sjekker CurrentFloor: ", data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].CurrentFloor)
+				fmt.Println("Sjekker UpList: ", UpList)
 				if UpList[up] > data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].CurrentFloor{
 					data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = SortUp(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 					data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].Running = 1
@@ -569,8 +576,9 @@ for up:=0; up<len(UpList);up++ {
 					data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].Running = -1
 				}
 				if i != 0 {
-					udp.SendOrderlist(data) // , udp.GetIndex(data.PrimaryQ[i], data))
+					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
+				UpList = UpdateList(UpList,up)
 				handled = 1
 				break 
 			}

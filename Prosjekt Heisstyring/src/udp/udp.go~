@@ -101,8 +101,8 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 
 }
 
-func SendOrderlist(data *Data) { // IMALIVE
-	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187.255:39998")
+func SendOrderlist(data *Data,index int) { // IMALIVE
+	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+strconv.Itoa(data.PrimaryQ[index])+":39998")
 	bconn, err := net.DialUDP("udp",nil, udpAddr)
 	checkError(err)
 	// WRITE
@@ -118,7 +118,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
 	for {	
-		Println("HØRER")	
+		//Println("HØRER")	
 		n, err := conn.Read(buffer)
 		checkError(err)
 		//Data = buffer
@@ -141,6 +141,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 	//checkError(err)
 	for {
 		Println("Hører")
+		Println("Her er gammel OrderList: ", data.Statuses[GetIndex(GetID(),data)])	
 		bconn.SetReadDeadline(time.Now().Add(5*time.Second))		
 		n, err := bconn.Read(buffer)
 		if err != nil && data.PrimaryQ[1] == GetID() {
@@ -155,7 +156,8 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		}
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], data)		
-		Println("her er primaryQen:", data.PrimaryQ)		
+		Println("her er primaryQen:", data.PrimaryQ)
+		Println("Her er ny OrderList: ", data.Statuses[GetIndex(GetID(),data)])		
 		// Printf("Rcv %d bytes: %s\n",n, buffer)	
 	}	
 }
