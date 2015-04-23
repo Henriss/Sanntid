@@ -131,7 +131,7 @@ func ElevatorControl(status *udp.Status){
 			status.Running = 0
 		}
 		for(i:=0;i<len(status.ButtonList);i++){
-			driver.SetButtonLamp(status.ButtonList[i], temp, value 1)
+			driver.SetButtonLamp(status.ButtonList[i], temp, 1)
 		}
 		//ButtonList = ButtonList[:0]
 						
