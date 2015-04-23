@@ -79,7 +79,7 @@ func GoToFloor(button int,  floorChan chan int,data *udp.Data) {
 	}
 }
 */
-func GoToFloor(floor int, status *udp.Status) {
+func GoToFloor(floor int, status *udp.Status, list bool) {
 	fmt.Println("control 82: går til floor floor:",floor)
 	for {
 		driver.SetFloorIndicator(driver.GetFloorSensorSignal())
@@ -92,8 +92,10 @@ func GoToFloor(floor int, status *udp.Status) {
 				if floor == 0 || floor == 3 {
 					status.Running = 0
 				}
-				driver.SetButtonLamp(status.ButtonList[0], floor, 0)
-				status.ButtonList = functions.UpdateList(status.ButtonList,0)
+				if list {
+					driver.SetButtonLamp(status.ButtonList[0], floor, 0)
+					status.ButtonList = functions.UpdateList(status.ButtonList,0)
+				}
 				break
 		} else if floor > driver.GetFloorSensorSignal() && driver.GetFloorSensorSignal() != -1 && floor != -1 {   
 			driver.SetMotorDirection(driver.DIRN_UP) 
@@ -509,7 +511,7 @@ for up:=0; up<len(UpList);up++ {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = functions.SortUp(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].NextFloor = UpList[up]
 				fmt.Println("control 402: heis i etasjen under og på vei oppover. UpList:", UpList)
-				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(status.ButtonList,2)
+				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,2)
 				UpList = functions.UpdateList(UpList,up)
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))

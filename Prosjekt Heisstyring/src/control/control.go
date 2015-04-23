@@ -79,7 +79,7 @@ func GoToFloor(button int,  floorChan chan int,data *udp.Data) {
 	}
 }
 */
-func GoToFloor(floor int, status *udp.Status) {
+func GoToFloor(floor int, status *udp.Status, list int) {
 	fmt.Println("control 82: går til floor floor:",floor)
 	for {
 		driver.SetFloorIndicator(driver.GetFloorSensorSignal())
@@ -92,8 +92,10 @@ func GoToFloor(floor int, status *udp.Status) {
 				if floor == 0 || floor == 3 {
 					status.Running = 0
 				}
-				driver.SetButtonLamp(status.ButtonList[0], floor, 0)
-				status.ButtonList = functions.UpdateList(status.ButtonList,0)
+				if list == 1 {
+					driver.SetButtonLamp(status.ButtonList[0], floor, 0)
+					status.ButtonList = functions.UpdateList(status.ButtonList,0)
+				}
 				break
 		} else if floor > driver.GetFloorSensorSignal() && driver.GetFloorSensorSignal() != -1 && floor != -1 {   
 			driver.SetMotorDirection(driver.DIRN_UP) 
@@ -148,28 +150,28 @@ func ElevatorControl(status *udp.Status){
 						temp = status.OrderList[0]
 						status.OrderList = functions.UpdateList(status.OrderList,0)
 						
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,1)
 						temp = 0
 					}else if status.OrderList[0] == -1{
 						temp = status.CommandList[0]
 						status.CommandList = functions.UpdateList(status.CommandList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,0)
 						temp = 0
 					}else if status.OrderList[0]>status.CommandList[0]{
 						temp = status.CommandList[0]
 						status.CommandList = functions.UpdateList(status.CommandList,0)	
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,0)
 						temp = 0
 					}else if status.CommandList[0]>status.OrderList[0]{
 						temp = status.OrderList[0]
 						status.OrderList = functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,1)
 						temp = 0
 					}else if status.OrderList[0] == status.CommandList[0]{
 						temp = status.OrderList[0]
 						status.CommandList=functions.UpdateList(status.CommandList,0)
 						status.OrderList=functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,1)
 						temp = 0
 					}
 				}else if status.OrderList[0] < status.CurrentFloor{
@@ -177,33 +179,33 @@ func ElevatorControl(status *udp.Status){
 					if status.CommandList[0] == -1 {
 						temp = status.OrderList[0]
 						status.OrderList = functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,1)
 						temp = 0
 					}else if status.OrderList[0] == -1 {
 						temp = status.CommandList[0] 
 						status.CommandList = functions.UpdateList(status.CommandList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,0)
 						temp = 0
 					}else if status.OrderList[0] < status.CommandList[0]{
 						temp = status.CommandList[0]
 						status.CommandList = functions.UpdateList(status.CommandList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,0)
 						temp = 0
 					}else if status.CommandList[0] < status.OrderList[0]{
 						temp = status.OrderList[0]
 						status.OrderList = functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status,1)
 						temp = 0
 					}else if status.OrderList[0] == status.CommandList[0]{
 						temp = status.OrderList[0]
 						status.CommandList=functions.UpdateList(status.CommandList,0)
 						status.OrderList=functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status)
+						GoToFloor(temp, status),1
 						temp = 0						
 					}						
 				}else if 	status.OrderList[0] == driver.GetFloorSensorSignal() {
 						status.OrderList=functions.UpdateList(status.OrderList,0)
-						GoToFloor(driver.GetFloorSensorSignal(), status)						
+						GoToFloor(driver.GetFloorSensorSignal(), status,1)						
 				}
 			}
 	
