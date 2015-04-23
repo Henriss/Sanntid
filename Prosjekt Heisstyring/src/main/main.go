@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	fmt.Println("FINN ET BEDRE STED FOR RUNNING=0 I MORRA")
+	fmt.Println("FINN ET BEDRE STED FOR RUNNING=0 I DAG")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	fmt.Println(udp.GetID())
@@ -44,7 +44,8 @@ func main() {
 	//SlaveChan<-1
 	fmt.Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),&Data))
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
-	go control.ElevatorControl(&Data.Statuses[udp.GetIndex(udp.GetID(),&Data)])
+	go control.ElevatorControl(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
 		go control.CostFunction(&Data)
 	}

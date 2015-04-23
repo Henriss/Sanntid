@@ -90,7 +90,7 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 	for {
 		//Println("SENDER")
 		// WRITE
-		b,_ := json.Marshal(data)
+		b,_ := json.Marshal(*data)
 		bconn.Write(b)
 		//json.Unmarshal(b[0:len(b)], temp) 
 		//Println("b: ", b)
@@ -107,7 +107,7 @@ func SendOrderlist(data *Data,index int) { // IMALIVE
 	checkError(err)
 	// WRITE
 	fmt.Println("ORderList sent: ", data.Statuses[index].OrderList)
-	b,_ := json.Marshal(data) // nok å bare sende en gang?
+	b,_ := json.Marshal(*data) // nok å bare sende en gang?
 	bconn.Write(b)		
 	checkError(err)
 }
@@ -124,11 +124,11 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		checkError(err)
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
-		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != data.PrimaryQ[len(temp.PrimaryQ)-1] {
-			data.PrimaryQ = append(data.PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
+		if temp.PrimaryQ[len((*temp).PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1] {
+			(*data).PrimaryQ = append((*data).PrimaryQ, (*temp).PrimaryQ...) //PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
-		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])
+		data.Statuses = append(data.Statuses, temp.Statuses[(*temp).ID])
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 	}
 }
@@ -142,13 +142,13 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 	//checkError(err)
 	for {
 		fmt.Println("Hører")
-		fmt.Println("Her er gammel OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)	
+		fmt.Println("Her er gammel OrderList: ", (*data).Statuses[GetIndex(GetID(),data)].OrderList)	
 		bconn.SetReadDeadline(time.Now().Add(5*time.Second))		
 		n, err := bconn.Read(buffer)
-		if err != nil && data.PrimaryQ[1] == GetID() {
+		if err != nil && (*data).PrimaryQ[1] == GetID() {
 			fmt.Println("Mottar ikke meldinger fra primary lenger, tar over")
-			data.PrimaryQ = data.PrimaryQ[1:] // UpdateList(data.PrimaryQ,0)
-			data.Statuses = data.Statuses[1:]
+			(*data).PrimaryQ = (*data).PrimaryQ[1:] // UpdateList(data.PrimaryQ,0)
+			(*data).Statuses = (*data).Statuses[1:]
 			go PrimaryBroadcast(baddr, data)
 			go PrimaryListen(data, SortChan)
 			// SendOrderlist(Data)
@@ -156,9 +156,10 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 			break
 		}
 		//Data = buffer
-		err = json.Unmarshal(buffer[0:n], data)		
-		fmt.Println("her er primaryQen:", data.PrimaryQ)
-		fmt.Println("Her er ny OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)		
+		err = json.Unmarshal(buffer[0:n], *data)		
+		fmt.Println("her er primaryQen:", (*data).PrimaryQ)
+		fmt.Println("Her er ny OrderList: ", (*data).Statuses[GetIndex(GetID(),data)].OrderList)
+		fmt.Println("Index: ", GetIndex(GetID(),data))	
 		// Printf("Rcv %d bytes: %s\n",n, buffer)	
 	}	
 }
@@ -171,13 +172,13 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 	checkError(err)
 	for {
 		 //WRITE
-		b,_ := json.Marshal(data)
-		data.Statuses[GetIndex(GetID(), data)].UpList = data.Statuses[GetIndex(GetID(), data)].UpList[:0]
-		data.Statuses[GetIndex(GetID(), data)].DownList = data.Statuses[GetIndex(GetID(), data)].DownList[:0]
+		b,_ := json.Marshal(*data)
+		data.Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
+		data.Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
 		conn.Write(b)	
 		checkError(err)
-		time.Sleep(2500*time.Millisecond) // bytte til bare ved endringar etterhvert
-		if data.Statuses[GetIndex(GetID(), data)].Primary == true {
+		time.Sleep(150*time.Millisecond) // bytte til bare ved endringar etterhvert
+		if (*data).Statuses[GetIndex(GetID(), data)].Primary == true {
 			break
 		}
 	}
@@ -239,8 +240,8 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		
 	
 	} else {
-		err = json.Unmarshal(buffer[0:n], data)
-		fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
+		err = json.Unmarshal(buffer[0:n], *data)
+		fmt.Println("PrimaryQ før checklist: ", (*data).PrimaryQ)
 		if functions.CheckList((*data).PrimaryQ,GetID()) == false{
 			fmt.Println("Funkar checklist?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
@@ -250,7 +251,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//(*data).Statuses = temp.Statuses
 		
 		//(*data).PrimaryQ[1:] = SortUp((*data).PrimaryQ[1:])
-		fmt.Println("PrimaryQ: ", data.PrimaryQ)
+		fmt.Println("PrimaryQ: ", (*data).PrimaryQ)
 		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
 		//SlaveChan<- 1
 		go ChannelFunc(SlaveChan)		
@@ -267,8 +268,8 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 }
 
 func GetIndex(ID int, data *Data) int { 
-	for i:=0; i<len(data.PrimaryQ); i++ {
-		if data.PrimaryQ[i] == ID {
+	for i:=0; i<len((*data).PrimaryQ); i++ {
+		if (*data).PrimaryQ[i] == ID {
 			return i
 		}
 	}
@@ -298,7 +299,10 @@ func SendCommandList() { // Bare sende siste tal for simplicity
 	for {
 		b,_ := json.Marshal(currentStruct)
 		conn.Write(b)	
-		Println("Sent: ",currentStruct.Teller) 		
+		Println("S
+		
+		
+		ent: ",currentStruct.Teller) 		
 		currentStruct.Teller = currentStruct.Teller + 1
 		time.Sleep(1*time.Second)
 	}
