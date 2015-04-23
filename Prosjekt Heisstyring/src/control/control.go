@@ -200,7 +200,7 @@ func ElevatorControl(status *udp.Status){
 						temp = status.OrderList[0]
 						status.CommandList=functions.UpdateList(status.CommandList,0)
 						status.OrderList=functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status),1
+						GoToFloor(temp, status,1)
 						temp = 0						
 					}						
 				}else if 	status.OrderList[0] == driver.GetFloorSensorSignal() {
