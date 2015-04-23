@@ -123,12 +123,12 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		n, err := conn.Read(buffer)
 		checkError(err)
 		//Data = buffer
-		err = json.Unmarshal(buffer[0:n], *temp)
+		err = json.Unmarshal(buffer[0:n], temp)
 		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1] {
 			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
-		data.Statuses = append(data.Statuses, temp.Statuses[(*temp).ID])
+		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 	}
 }
