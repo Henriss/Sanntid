@@ -141,7 +141,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 	//checkError(err)
 	for {
 		Println("Hører")
-		Println("Her er gammel OrderList: ", data.Statuses[GetIndex(GetID(),data)])	
+		Println("Her er gammel OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)	
 		bconn.SetReadDeadline(time.Now().Add(5*time.Second))		
 		n, err := bconn.Read(buffer)
 		if err != nil && data.PrimaryQ[1] == GetID() {
@@ -157,7 +157,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], data)		
 		Println("her er primaryQen:", data.PrimaryQ)
-		Println("Her er ny OrderList: ", data.Statuses[GetIndex(GetID(),data)])		
+		Println("Her er ny OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)		
 		// Printf("Rcv %d bytes: %s\n",n, buffer)	
 	}	
 }
