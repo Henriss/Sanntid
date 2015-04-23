@@ -240,7 +240,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		
 	
 	} else {
-		err = json.Unmarshal(buffer[0:n], *data)
+		err = json.Unmarshal(buffer[0:n], data)
 		fmt.Println("PrimaryQ før checklist: ", (*data).PrimaryQ)
 		if functions.CheckList((*data).PrimaryQ,GetID()) == false{
 			fmt.Println("Funkar checklist?")
@@ -257,7 +257,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		go ChannelFunc(SlaveChan)		
 		go SlaveUpdate(data)
 		time.Sleep(2500*time.Millisecond) // Vente for å la Primary oppdatere PrimaryQen
-		go ListenForPrimary(broadcastListenConn, baddr, *data,PrimaryChan, SortChan)
+		go ListenForPrimary(broadcastListenConn, baddr, data,PrimaryChan, SortChan)
 	}
 	
 

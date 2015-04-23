@@ -114,7 +114,7 @@ func SendOrderlist(data *Data,index int) { // IMALIVE
 
 func PrimaryListen(data *Data, SortChan chan int) {
 	buffer := make([]byte, 1024)
-	temp := data
+	temp := *data
 	udpAddr, err := net.ResolveUDPAddr("udp", ":39999")
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
@@ -240,7 +240,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		
 	
 	} else {
-		err = json.Unmarshal(buffer[0:n], *data)
+		err = json.Unmarshal(buffer[0:n], data)
 		fmt.Println("PrimaryQ før checklist: ", (*data).PrimaryQ)
 		if functions.CheckList((*data).PrimaryQ,GetID()) == false{
 			fmt.Println("Funkar checklist?")
