@@ -40,11 +40,11 @@ type Data struct {
 
 
 func SetStatus(status *Status, running int, NextFloor int) {
-	(*status).ID := GetID()
+	
 	(*status).Running = running
 	(*status).CurrentFloor = driver.GetFloorSensorSignal()
 	(*status).NextFloor = NextFloor
-	(*status).ID = ID
+	(*status).ID = GetID()
 	
 	/*
 	(*data).Statuses[GetIndex(GetID(), data)].Running = running
