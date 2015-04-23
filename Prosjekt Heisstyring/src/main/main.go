@@ -9,6 +9,7 @@ import (
 	//"net"
 	//"os"
 	//"sort"
+	"functions"
 )
 
 func main() {
@@ -58,7 +59,7 @@ func main() {
 				
 			case <- SortChan:
 					if len(Data.PrimaryQ)  > 1{
-						temp := control.SortUp(Data.PrimaryQ[1:])
+						temp := functions.SortUp(Data.PrimaryQ[1:])
 						Data.PrimaryQ = Data.PrimaryQ[:1]
 						Data.PrimaryQ = append(Data.PrimaryQ, temp...)
 						fmt.Println(Data.PrimaryQ)

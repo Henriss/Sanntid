@@ -1,6 +1,6 @@
 // go run networkUDP.cd ..go
 package udp
-import (."fmt" // Using '.' to avoid prefixing functions with their package names
+import ("fmt" // Using '.' to avoid prefixing functions with their package names
 		// This is probably not a good idea for large projects...
 	//"runtime"
 	"time"
@@ -11,8 +11,8 @@ import (."fmt" // Using '.' to avoid prefixing functions with their package name
 	"driver"
 	//"sort"
 	"encoding/json"
-	"sort"
-
+	//"sort"
+	"functions"
 )
 
 
@@ -106,6 +106,7 @@ func SendOrderlist(data *Data,index int) { // IMALIVE
 	bconn, err := net.DialUDP("udp",nil, udpAddr)
 	checkError(err)
 	// WRITE
+	fmt.Println("ORderList sent: ", data.Statuses[index].OrderList)
 	b,_ := json.Marshal(data) // nok å bare sende en gang?
 	bconn.Write(b)		
 	checkError(err)
@@ -140,12 +141,12 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 	//conn, err := net.ListenUDP("udp", udpAddr)
 	//checkError(err)
 	for {
-		Println("Hører")
-		Println("Her er gammel OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)	
+		fmt.Println("Hører")
+		fmt.Println("Her er gammel OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)	
 		bconn.SetReadDeadline(time.Now().Add(5*time.Second))		
 		n, err := bconn.Read(buffer)
 		if err != nil && data.PrimaryQ[1] == GetID() {
-			Println("Mottar ikke meldinger fra primary lenger, tar over")
+			fmt.Println("Mottar ikke meldinger fra primary lenger, tar over")
 			data.PrimaryQ = data.PrimaryQ[1:] // UpdateList(data.PrimaryQ,0)
 			data.Statuses = data.Statuses[1:]
 			go PrimaryBroadcast(baddr, data)
@@ -156,8 +157,8 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		}
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], data)		
-		Println("her er primaryQen:", data.PrimaryQ)
-		Println("Her er ny OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)		
+		fmt.Println("her er primaryQen:", data.PrimaryQ)
+		fmt.Println("Her er ny OrderList: ", data.Statuses[GetIndex(GetID(),data)].OrderList)		
 		// Printf("Rcv %d bytes: %s\n",n, buffer)	
 	}	
 }
@@ -226,7 +227,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	broadcastListenConn.SetReadDeadline(time.Now().Add(3*time.Second))
 	n, err := broadcastListenConn.Read(buffer)
 	if err != nil {
-		Println("Tar over som primary!")
+		fmt.Println("Tar over som primary!")
 		(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 		(*data).Statuses = append((*data).Statuses, status)
 		(*data).Statuses[GetIndex(GetID(), data)].Primary = true
@@ -239,9 +240,9 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	
 	} else {
 		err = json.Unmarshal(buffer[0:n], data)
-		Println("PrimaryQ før checklist: ", data.PrimaryQ)
-		if CheckList((*data).PrimaryQ,GetID()) == false{
-			Println("Funkar checklist?")
+		fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
+		if functions.CheckList((*data).PrimaryQ,GetID()) == false{
+			fmt.Println("Funkar checklist?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 			(*data).Statuses = append((*data).Statuses, status)
 		}
@@ -263,6 +264,27 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	//	fmt.Printf("Generating local address: \t Network(): %s \t String(): %s \n", laddr.Network(), laddr.String())
 	//	fmt.Printf("Generating broadcast address: \t Network(): %s \t String(): %s \n", baddr.Network(), baddr.String())
 	return err
+}
+
+func GetIndex(ID int, data *Data) int { 
+	for i:=0; i<len(data.PrimaryQ); i++ {
+		if data.PrimaryQ[i] == ID {
+			return i
+		}
+	}
+	return -1
+}
+
+
+func checkError(err error) {
+	if err != nil {
+		fmt.Println("Noe gikk galt %v", err)
+		return
+	}
+}
+
+func ChannelFunc(Channel chan int) {
+	Channel <-1
 }
 
 /*
@@ -304,69 +326,6 @@ func SendCommand(floorChan chan int) {
 
 }*/
 
-func checkError(err error) {
-	if err != nil {
-		Println("Noe gikk galt %v", err)
-		return
-	}
-}
 
-func GetIndex(ID int, data *Data) int { 
-	for i:=0; i<len(data.PrimaryQ); i++ {
-		if data.PrimaryQ[i] == ID {
-			return i
-		}
-	}
-	return -1
-}
-
-func UpdateList(OrderList []int, j int) []int {
-	temp := make([]int, len(OrderList)-1)
-	for i:= 0; i<len(OrderList);i++ {
-		if i<j {
-			temp[i] = OrderList[i]
-		} else if i>j {
-			temp[i-1] = OrderList[i]
-		}
-	}
-	return temp
-}
-
-
-func ChannelFunc(Channel chan int) {
-	Channel <-1
-}
-
-
-func SortUp(UpList []int)  []int{ //Sorterer listen UpList i stigende rekkefølge og fjerner like tall og -1
-	sort.Ints(UpList)
-	temp := make([]int,1)
-	var minusen int
-	if(UpList[0]==-1){
-		temp[0] = UpList[1]
-		minusen  = 2
-	}else{
-		temp[0] = UpList[0]
-		minusen = 1
-	}
-	
-	
-	counter := 0
-	for i:= minusen;i<len(UpList); i++ {
-		if UpList[i] > temp[counter] {
-			counter ++
-			temp = append(temp,UpList[i])
-		}
-	}
-	return temp
-}
-func CheckList(list []int, check int) bool{ // Sjekker om listen list inneholder heltallet check
-	for i:=0;i<len(list);i++{
-		if(list[i] == check){
-			return true
-		}
-	}
-	return false
-}
 
 
