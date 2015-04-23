@@ -114,7 +114,8 @@ func SendOrderlist(data *Data,index int) { // IMALIVE
 
 func PrimaryListen(data *Data, SortChan chan int) {
 	buffer := make([]byte, 1024)
-	temp := data
+	var temp *Data
+	temp := *data
 	udpAddr, err := net.ResolveUDPAddr("udp", ":39999")
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
@@ -124,7 +125,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		checkError(err)
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
-		if temp.PrimaryQ[len((*temp).PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1] {
+		if (*temp).PrimaryQ[len((*temp).PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1] {
 			(*data).PrimaryQ = append((*data).PrimaryQ, (*temp).PrimaryQ...) //PrimaryQ[1:]...)
 			SortChan<- 1	
 		}
