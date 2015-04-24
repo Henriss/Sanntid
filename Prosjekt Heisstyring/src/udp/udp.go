@@ -117,22 +117,27 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 	udpAddr := make([]*net.UDPAddr,len(data.PrimaryQ)-1)
 	err := make([]error,len(data.PrimaryQ)-1)
 	conn := make([]*net.UDPConn,len(data.PrimaryQ)-1)
+	fmt.Println("Sjekk linje 120")
 	for i:=1;i<len(data.PrimaryQ);i++{
 		udpAddr[i-1],err[i-1] = net.ResolveUDPAddr("udp",strconv.Itoa(30000+data.PrimaryQ[i]))
 		conn[i-1],err[i-1] = net.ListenUDP("udp",udpAddr[i-1])
 		checkError(err[i-1])
 	}
-	for {
+	fmt.Println("Sjekk linje 126")
+	for {	
+		fmt.Println("Sjekk linje 128")
 		n := make([]int,len(data.PrimaryQ)-1)
 		for i:=1;i<len(data.PrimaryQ);i++{
 			fmt.Println("Hører på heis ",data.PrimaryQ[i])
 			conn[i-1].SetReadDeadline(time.Now().Add(3*time.Second))
 			n[i-1],err[i-1] = conn[i-1].Read(buffer)
+			fmt.Println("Sjekk linje 135")
 			if err[i-1] != nil {
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				err[i-1]=conn[i-1].Close()
 				fmt.Println("Fjerner død slave")
 			}else{
+				fmt.Println("Sjekk linje 140")
 				err[i-1] = json.Unmarshal(buffer[0:n[i-1]],data)
 				fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
 				if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
@@ -142,6 +147,7 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 					(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ[1:]...) //PrimaryQ[1:]...)
 					SortChan<- 1	
 				}else{
+					fmt.Println("Sjekk linje 150")
 					(*data).Statuses[GetIndex(temp.ID,data)] = temp.Statuses[GetIndex(temp.ID,data)]
 				}
 			}
