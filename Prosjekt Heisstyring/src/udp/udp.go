@@ -88,7 +88,7 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 	bconn, err := net.DialUDP("udp", nil, baddr)
 	checkError(err)
 	for {
-		//Println("SENDER")
+		Println("SENDER")
 		// WRITE
 		b,_ := json.Marshal(*data)
 		bconn.Write(b)
