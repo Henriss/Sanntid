@@ -132,7 +132,7 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				conn[i-1].close()
 			}else{
-				err[i-1] = json.Unmarshal(buffer[0:n[i-1],data)
+				err[i-1] = json.Unmarshal(buffer[0:n[i-1]],data)
 				fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
 				if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
 					fmt.Print("GetIndex(temp.ID,&temp): ",GetIndex(temp.ID,&temp))
@@ -208,7 +208,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 
 
 func SlaveAlive(data *Data) {
-	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+ strconv.Itoa((*data).PrimaryQ[0]) + ":"+strconv.Itoa(GetID()+30000)
+	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+ strconv.Itoa((*data).PrimaryQ[0]) + ":"+strconv.Itoa(GetID()+30000))
 	conn, err := net.DialUDP("udp",nil, udpAddr)
 	checkError(err)
 	for {
