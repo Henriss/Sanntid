@@ -358,7 +358,7 @@ func checkError(err error) {
 func ChannelFunc(Channel chan int) {
 	Channel <-1
 }
-func UpdateStatusList(OrderList []Status, j int) []int {
+func UpdateStatusList(OrderList []Status, j int) []Status {
 	temp := make([]Status, len(OrderList)-1)
 	for i:= 0; i<len(OrderList);i++ {
 		if i<j {
