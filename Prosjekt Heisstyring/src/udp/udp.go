@@ -188,8 +188,8 @@ func CleanDeadSlaves(data *Data){
 		time.Sleep(3*time.Second)
 		fmt.Println("Lendgen til primaryq i cleandeadslaves: ",len(data.PrimaryQ))
 		for i:=1;i<len(data.PrimaryQ);i++{
-			fmt.Println("Sjekker delay: ",functions.Delay(data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate))
-			if(functions.Delay(data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate)>2){
+			fmt.Println("Sjekker delay: ",functions.Delay(data.Statuses[0].LastUpdate,data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate))
+			if(functions.Delay(data.Statuses[0].LastUpdate,data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate)>2){
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				data.Statuses = UpdateStatusList(data.Statuses,GetIndex(data.PrimaryQ[i],data))
 			}			
