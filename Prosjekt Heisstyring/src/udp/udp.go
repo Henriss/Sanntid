@@ -240,8 +240,8 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	n, err := broadcastListenConn.Read(buffer)
 	if err != nil {
 		fmt.Println("Tar over som primary!")
-		(*data).Statuses = append((*data).Statuses, status)
 		(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
+		(*data).Statuses = append((*data).Statuses, status)
 		(*data).Statuses[GetIndex(GetID(), data)].Primary = true
 		//PrimaryChan <- 1
 		//go ChannelFunc(PrimaryChan)
