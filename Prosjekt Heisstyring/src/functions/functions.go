@@ -2,8 +2,8 @@ package functions
 import (//"fmt" // Using '.' to avoid prefixing functions with their package names
 		// This is probably not a good idea for large projects...
 	//"runtime"
-	//"time"
-	//"net"
+	"time"
+	"math"
 	//"bufio"
 	//"os"
 	//"strconv"

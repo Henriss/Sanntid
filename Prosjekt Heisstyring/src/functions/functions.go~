@@ -86,5 +86,9 @@ func SortDown(DownList []int)  []int{
 	}
 	return temp
 } 
-	
+
+func Delay(SlaveTime time.Time, PrimeTime time.Time) int{
+	temp := SlaveTime.Sub(PrimeTime)
+	return int(math.Floor(temp.Seconds()))
+}
 
