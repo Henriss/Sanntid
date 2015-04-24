@@ -13,6 +13,7 @@ import ("fmt" // Using '.' to avoid prefixing functions with their package names
 	"encoding/json"
 	//"sort"
 	"functions"
+	
 )
 
 
@@ -22,7 +23,7 @@ type Status struct {
 	NextFloor int
 	Primary bool
 	ID int
-	IsAlive int
+	LastUpdate time.Time
 	//PrimaryQ [3]string
 	CommandList []int
 	UpList []int  // slice = slice[:0] for å tømme slicen når sendt til primary
@@ -41,7 +42,7 @@ type Data struct {
 
 
 func SetStatus(status *Status, running int, NextFloor int) {
-	
+	(*status).LastUpdate = time.Now()
 	(*status).Running = running
 	(*status).CurrentFloor = driver.GetFloorSensorSignal()
 	(*status).NextFloor = NextFloor
