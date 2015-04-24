@@ -135,6 +135,7 @@ func ElevatorControl(status *udp.Status){
 		}
 		for i:=0;i<len((*status).ButtonList);i++ {
 			fmt.Println("ButtonList(i): ",(*status).ButtonList[i])
+			fmt.Println("OrderList(i): ",(*status).OrderList[i])
 			driver.SetButtonLamp((*status).ButtonList[i], (*status).OrderList[i], 1)
 		}
 		//ButtonList = ButtonList[:0]
