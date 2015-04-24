@@ -141,7 +141,7 @@ func ElevatorControl(status *udp.Status){
 		//ButtonList = ButtonList[:0]
 						
 		fmt.Printf("OrderList[0]: %d CommandList[0]: %d CurrentFloor: %d ID: %d \n",(*status).OrderList[0],(*status).CommandList[0], (*status).CurrentFloor, (*status).ID)
-		fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
+		
 			if !((*status).OrderList[0] == -1 && (*status).CommandList[0] ==-1){
 				fmt.Println("OrderList: ", (*status).CurrentFloor)
 				// 
@@ -221,6 +221,7 @@ func ElevatorControl(status *udp.Status){
 func GetDestination(status *udp.Status) { //returnerer bare button, orderlist oppdateres
 	//time.Sleep(1*time.Second)
 	for {	
+		fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
 		for floor := 0; floor < driver.N_FLOORS; floor++ {
 				if driver.GetButtonSignal(0,floor) == 1 && len((*status).UpList) == 0 {
 					(*status).UpList = append((*status).UpList, floor) 
