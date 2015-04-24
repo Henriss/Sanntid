@@ -117,7 +117,7 @@ func PrimaryListen2(data *Data) {
 	
 	udpAddr := make([]*net.UDPAddr,len(data.PrimaryQ)-1)
 	err := make([]error,len(data.PrimaryQ)-1)
-	conn := make([]*net.UDPConn,len(data.PrimaryQ)-1)
+	conn := make([]*net.UDPConn,100)//len(data.PrimaryQ)-1)
 	fmt.Println("Sjekk linje 120")
 	for i:=1;i<len(data.PrimaryQ);i++{
 		udpAddr[i-1],err[i-1] = net.ResolveUDPAddr("udp",strconv.Itoa(30000+data.PrimaryQ[i]))
