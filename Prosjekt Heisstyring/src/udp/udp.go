@@ -208,7 +208,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 }
 
 
-func SlaveAlive() {
+func SlaveAlive(data *Data) {
 	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+ strconv.Itoa((*data).PrimaryQ[0]) + ":"+strconv.Itoa(GetID()+30000))
 	conn, err := net.DialUDP("udp",nil, udpAddr)
 	checkError(err)
