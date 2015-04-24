@@ -186,10 +186,13 @@ func CleanDeadSlaves(data *Data){
 	for{
 		data.Statuses[0].LastUpdate = time.Now()
 		time.Sleep(3*time.Second)
-		for i:=1;len(data.PrimaryQ);i++{
-			if(functions.Delay(data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate)>2){
-				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
+		fmt.Println("Lendgen til primaryq i cleandeadslaves: ",len(data.PrimaryQ))
+		for i:=1;i<len(data.PrimaryQ);i++{
+			fmt.Println("Sjekker delay: ",functions.Delay(data.Statuses[0].LastUpdate,data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate))
+			if(functions.Delay(data.Statuses[0].LastUpdate,data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate)>2){
 				data.Statuses = UpdateStatusList(data.Statuses,GetIndex(data.PrimaryQ[i],data))
+				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
+				
 			}			
 		}		
 	}
@@ -324,6 +327,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		go PrimaryBroadcast(baddr,data)
 	//	go PrimaryListen2(data)
 		go PrimaryListen(data, SortChan)
+		go CleanDeadSlaves(data)
 		
 		
 	
