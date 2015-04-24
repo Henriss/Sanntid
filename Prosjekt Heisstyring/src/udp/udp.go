@@ -134,7 +134,7 @@ func PrimaryListen2(data *Data) {
 			n[i-1],err[i-1] = conn[i-1].Read(buffer)
 			fmt.Println("Sjekk linje 135")
 			if err[i-1] != nil {
-				data.Statuses = functions.UpdateList(data.Statuses,GetIndex(data.Primary[i],data))
+				data.Statuses = functions.UpdateStatusList(data.Statuses,GetIndex(data.Primary[i],data))
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				
 				err[i-1]=conn[i-1].Close()
