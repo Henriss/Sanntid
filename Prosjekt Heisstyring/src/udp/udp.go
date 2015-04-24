@@ -136,7 +136,7 @@ func PrimaryListen2(data *Data) {
 			n[i-1],err[i-1] = conn[i-1].Read(buffer)
 			fmt.Println("Sjekk linje 135")
 			if err[i-1] != nil {
-				data.Statuses = UpdateStatusList(data.Statuses,GetIndex(data.PrimaryQ[i],data))
+				//data.Statuses = UpdateStatusList(data.Statuses,GetIndex(data.PrimaryQ[i],data))
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				
 				err[i-1]=conn[i-1].Close()
@@ -165,7 +165,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], &temp)
 		if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
-			fmt.Print("GetIndex(temp.ID,&temp): ",GetIndex(temp.ID,&temp))
+			fmt.Println("GetIndex(temp.ID,&temp): ",GetIndex(temp.ID,&temp))
 			fmt.Println("   Lengden til statuses: ", len(temp.Statuses))
 			
 			(*data).Statuses = append((*data).Statuses, temp.Statuses[GetIndex(temp.ID,&temp)])
