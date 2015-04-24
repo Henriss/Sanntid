@@ -131,6 +131,7 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 			if err[i-1] != nil {
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				err[i-1]=conn[i-1].Close()
+				fmt.Println("Fjerner død slave")
 			}else{
 				err[i-1] = json.Unmarshal(buffer[0:n[i-1]],data)
 				fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
@@ -305,7 +306,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//PrimaryChan <- 1
 		//go ChannelFunc(PrimaryChan)
 		go PrimaryBroadcast(baddr,data)
-		go PrimaryListen(data, SortChan)
+		go PrimaryListen2(data, SortChan)
 		
 		
 	
@@ -326,7 +327,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
 		//SlaveChan<- 1
 		go ChannelFunc(SlaveChan)		
-		go SlaveUpdate(data)
+		go SlaveAlive(data)
 		time.Sleep(2500*time.Millisecond) // Vente for å la Primary oppdatere PrimaryQen
 		go ListenForPrimary(broadcastListenConn, baddr, data,PrimaryChan, SortChan)
 	}
