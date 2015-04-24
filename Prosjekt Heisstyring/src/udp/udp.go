@@ -304,7 +304,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//go ChannelFunc(PrimaryChan)
 		go PrimaryBroadcast(baddr,data)
 		go PrimaryListen2(data)
-		go PrimaryListen2(data, SortChan)
+		go PrimaryListen(data, SortChan)
 		
 		
 	
