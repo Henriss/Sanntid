@@ -127,7 +127,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		fmt.Println("TEMP ID: ", temp.ID)
 		if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
 			fmt.Println("Her?")
-			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
+			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ[1:]...) //PrimaryQ[1:]...)
 			(*data).Statuses = append((*data).Statuses, temp.Statuses[GetIndex(temp.ID,&temp)])
 			SortChan<- 1	
 		}else{

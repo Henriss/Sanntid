@@ -362,11 +362,11 @@ func CostFunction(data *udp.Data) {
 	}
 	
 	//fmt.Println("OrderList: ", data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList)
-	if(len(data.PrimaryQ) > 1){
+	/*if(len(data.PrimaryQ) > 1){
 		data.Statuses[1].OrderList = append(data.Statuses[1].OrderList,3)
 		
 		udp.SendOrderlist(data,1)
-	}
+	}*/
 	//fmt.Println("Sjekk om UPLIST oppdateres riktig: ", UpList)
 	//fmt.Println("Sjekk om DOWNLIST oppdateres riktig: ", DownList)
 	//fmt.Println(DownList)
