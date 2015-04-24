@@ -125,8 +125,11 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], &temp)
 		if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
-			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ[1:]...) //PrimaryQ[1:]...)
+			fmt.Print("GetIndex(temp.ID,&temp): ",GetIndex(temp.ID,&temp))
+			fmt.Println("   Lengden til statuses: ", len(temp.Statuses))
+			
 			(*data).Statuses = append((*data).Statuses, temp.Statuses[GetIndex(temp.ID,&temp)])
+			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ[1:]...) //PrimaryQ[1:]...)
 			SortChan<- 1	
 		}else{
 			(*data).Statuses[GetIndex(temp.ID,data)] = temp.Statuses[GetIndex(temp.ID,data)]

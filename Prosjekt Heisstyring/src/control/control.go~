@@ -326,9 +326,9 @@ func CostFunction(data *udp.Data) {
 	for {
 	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
-	fmt.Println("status.UpList i CostFunction: ",data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].UpList)
-	fmt.Println("Lengden til statuses: ", len(data.Statuses))
-	fmt.Println("PrimaryQ: ", data.PrimaryQ)
+	//fmt.Println("status.UpList i CostFunction: ",data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].UpList)
+	//fmt.Println("Lengden til statuses: ", len(data.Statuses))
+	//fmt.Println("PrimaryQ: ", data.PrimaryQ)
 	/*if len(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList) > 0 {
 		if(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList[0] == -1){
 			data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList = UpdateList(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList, 0)
@@ -336,6 +336,7 @@ func CostFunction(data *udp.Data) {
 	}*/
 	for k := 0; k < len(data.PrimaryQ);k++ {
 		if udp.GetIndex(data.PrimaryQ[k],data) != -1 {
+			fmt.Println(udp.GetIndex(data.PrimaryQ[k], data))
 			DownList = append(DownList,data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList...)
 			data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList = data.Statuses[udp.GetIndex(data.PrimaryQ[k], data)].DownList[:0]
 			
@@ -351,9 +352,12 @@ func CostFunction(data *udp.Data) {
 		}
 	}
 	if len(UpList) > 0 || len(DownList) > 0{
+		//fmt.Println("status.UpList i CostFunction: ",data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].UpList)
+		fmt.Println("Lengden til statuses: ", len(data.Statuses))
+		fmt.Println("PrimaryQ: ", data.PrimaryQ)
 		fmt.Println("control 258: OppList i cost function: ", UpList)
 		fmt.Println("control 259: Down List i cost function: ", DownList)
-		time.Sleep(1*time.Second)
+		time.Sleep(2*time.Second)
 	}
 	
 	if len(UpList) > 0 {
