@@ -182,6 +182,7 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 		
 		
 		b,_ := json.Marshal(*data)
+		// Må endre detta til å bare slette når confirmation på ordre kommer, confirmation kan vere samma som lampe lista??
 		(*data).Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
 		(*data).Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
 		
@@ -239,8 +240,8 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	n, err := broadcastListenConn.Read(buffer)
 	if err != nil {
 		fmt.Println("Tar over som primary!")
-		(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 		(*data).Statuses = append((*data).Statuses, status)
+		(*data).PrimaryQ = append((*data).PrimaryQ, GetID())
 		(*data).Statuses[GetIndex(GetID(), data)].Primary = true
 		//PrimaryChan <- 1
 		//go ChannelFunc(PrimaryChan)
