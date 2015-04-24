@@ -11,3 +11,4 @@ OPPPDATER:!!!
  - primarylogikk når heiser kobles fra å på
  - fjerne døde slaver
  - kanskje channels? https://golang.org/doc/codewalk/sharemem/
+ - costfunction logikk og all anna logikk
