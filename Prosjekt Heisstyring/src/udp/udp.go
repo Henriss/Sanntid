@@ -111,7 +111,43 @@ func SendOrderlist(data *Data,index int) { // IMALIVE
 	bconn.Write(b)		
 	checkError(err)
 }
-
+func PrimaryListen2(data *Data, SortChan chan int) {
+	buffer := make([]byte,1024)
+	temp := *data
+	udpAddr = make([]int,len(data.PrimaryQ)-1)
+	err = make([]int,len(data.PrimaryQ)-1)
+	conn = make([]int,len(data.PrimaryQ)-1)
+	for i:=1;i<len(data.PrimaryQ);i++{
+		udpAddr[i-1],err[i-1] = net.ResolveUDPAddr("udp",strconv.Itoa(30000+data.PrimaryQ[i]))
+		conn[i-1],err[i-1] = net.ListenUDP("udp",udpAddr[i-1])
+		checkError(err[i-1])
+	}
+	for {
+		n := make([]int,len(data.PrimaryQ)-1)
+		for i:=1;i<len(data.PrimaryQ);i++{
+			Println("Hører på heis ",data.PrimaryQ[i])
+			conn[i-1].SetReadDeadLine(time.Now().Add(3*time.Second))
+			n[i-1],err[i-1] = conn.Read(buffer)
+			if err[i-1] != nil {
+				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
+			}else{
+				err[i-1] = json.Unmarshal(buffer[0:n[i-1],data)
+				fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
+				if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
+					fmt.Print("GetIndex(temp.ID,&temp): ",GetIndex(temp.ID,&temp))
+					fmt.Println("   Lengden til statuses: ", len(temp.Statuses))
+					(*data).Statuses = append((*data).Statuses, temp.Statuses[GetIndex(temp.ID,&temp)])
+					(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ[1:]...) //PrimaryQ[1:]...)
+					SortChan<- 1	
+				}else{
+					(*data).Statuses[GetIndex(temp.ID,data)] = temp.Statuses[GetIndex(temp.ID,data)]
+				}
+			}
+		}
+	}
+}	
+				
+			
 func PrimaryListen(data *Data, SortChan chan int) {
 	buffer := make([]byte, 1024)
 	temp := *data
