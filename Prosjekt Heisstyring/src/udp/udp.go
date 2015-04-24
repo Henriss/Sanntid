@@ -130,6 +130,8 @@ func PrimaryListen2(data *Data) {
 		n := make([]int,len(data.PrimaryQ)-1)
 		for i:=1;i<len(data.PrimaryQ);i++{
 			fmt.Println("Hører på heis ",data.PrimaryQ[i])
+			fmt.Println("Her er i: ", i)
+			fmt.Println("Her er lengda til conn ",len(conn))
 			conn[i-1].SetReadDeadline(time.Now().Add(3*time.Second))
 			n[i-1],err[i-1] = conn[i-1].Read(buffer)
 			fmt.Println("Sjekk linje 135")
