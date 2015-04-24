@@ -130,7 +130,7 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 			n[i-1],err[i-1] = conn[i-1].Read(buffer)
 			if err[i-1] != nil {
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
-				err[i-1]=conn[i-1].close()
+				err[i-1]=conn[i-1].Close()
 			}else{
 				err[i-1] = json.Unmarshal(buffer[0:n[i-1]],data)
 				fmt.Println("PrimaryQ før checklist: ", data.PrimaryQ)
