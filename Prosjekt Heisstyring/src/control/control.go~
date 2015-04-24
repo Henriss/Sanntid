@@ -133,7 +133,8 @@ func ElevatorControl(status *udp.Status){
 			status.Running = 0
 		}
 		for i:=0;i<len(status.ButtonList);i++ {
-			driver.SetButtonLamp(status.ButtonList[i], temp, 1)
+			fmt.Println("ButtonList(i): ",status.ButtonList[i])
+			driver.SetButtonLamp(status.ButtonList[i], status.OrderList[i], 1)
 		}
 		//ButtonList = ButtonList[:0]
 						
@@ -200,7 +201,7 @@ func ElevatorControl(status *udp.Status){
 						temp = status.OrderList[0]
 						status.CommandList=functions.UpdateList(status.CommandList,0)
 						status.OrderList=functions.UpdateList(status.OrderList,0)
-						GoToFloor(temp, status),1
+						GoToFloor(temp, status,1)
 						temp = 0						
 					}						
 				}else if 	status.OrderList[0] == driver.GetFloorSensorSignal() {
@@ -325,6 +326,8 @@ func CostFunction(data *udp.Data) {
 	for {
 	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
+	fmt.Println("status.UpList i CostFunction: ",data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].UpList)
+	fmt.Println("Lengden til statuses: ", len(data.Statuses))
 	/*if len(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList) > 0 {
 		if(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList[0] == -1){
 			data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList = UpdateList(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList, 0)
@@ -363,8 +366,8 @@ func CostFunction(data *udp.Data) {
 		
 		udp.SendOrderlist(data,1)
 	}
-	fmt.Println("Sjekk om UPLIST oppdateres riktig: ", UpList)
-	fmt.Println("Sjekk om DOWNLIST oppdateres riktig: ", DownList)
+	//fmt.Println("Sjekk om UPLIST oppdateres riktig: ", UpList)
+	//fmt.Println("Sjekk om DOWNLIST oppdateres riktig: ", DownList)
 	//fmt.Println(DownList)
 	for down:=0; down<len(DownList);down++ {
 		
@@ -495,7 +498,7 @@ for up:=0; up<len(UpList);up++ {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = functions.SortUp(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].NextFloor = UpList[up]
 				fmt.Println("control 387: heis i samme etasjen og står stille. UpList:", UpList)
-				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,2)
+				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,0)
 				UpList = functions.UpdateList(UpList,up) //Må modifiseres
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
@@ -511,7 +514,7 @@ for up:=0; up<len(UpList);up++ {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = functions.SortUp(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].NextFloor = UpList[up]
 				fmt.Println("control 402: heis i etasjen under og på vei oppover. UpList:", UpList)
-				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,2)
+				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,0)
 				UpList = functions.UpdateList(UpList,up)
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
@@ -528,7 +531,7 @@ for up:=0; up<len(UpList);up++ {
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].Running = 1
 				fmt.Println("control 417: heis i etasjen under og står stille. UpList:", UpList)
 				UpList = functions.UpdateList(UpList,up)
-				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,2)
+				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,0)
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
@@ -543,7 +546,7 @@ for up:=0; up<len(UpList);up++ {
 				fmt.Println("control 430: floor over heis.currentfloor og på vei oppover. UpList:", UpList)
 				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].NextFloor = UpList[up]
 				UpList = functions.UpdateList(UpList,up)
-				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,2)
+				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,0)
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
@@ -599,7 +602,7 @@ for up:=0; up<len(UpList);up++ {
 					data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList = functions.SortDown(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 					data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].Running = -1
 				}
-				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,2)
+				data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList = append(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].ButtonList,0)
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}

@@ -40,11 +40,11 @@ type Data struct {
 
 
 func SetStatus(status *Status, running int, NextFloor int) {
-	ID := GetID()
+	
 	(*status).Running = running
 	(*status).CurrentFloor = driver.GetFloorSensorSignal()
 	(*status).NextFloor = NextFloor
-	(*status).ID = ID
+	(*status).ID = GetID()
 	
 	/*
 	(*data).Statuses[GetIndex(GetID(), data)].Running = running
@@ -124,11 +124,16 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		checkError(err)
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
-		if temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1] {
+		fmt.Println("TEMP ID: ", temp.ID)
+		if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
+			fmt.Println("Her?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
+			(*data).Statuses = append((*data).Statuses, temp.Statuses[temp.ID])
 			SortChan<- 1	
+		}else{
+			fmt.Println("Eller her?")
+			(*data).Statuses[GetIndex(temp.ID,data)] = temp.Statuses[GetIndex(temp.ID,data)]
 		}
-		data.Statuses = append(data.Statuses, temp.Statuses[temp.ID])
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 	}
 }
@@ -172,9 +177,11 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 	checkError(err)
 	for {
 		 //WRITE
+		(*data).ID = GetID()
 		b,_ := json.Marshal(*data)
-		data.Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
-		data.Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
+		(*data).Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
+		(*data).Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
+		
 		conn.Write(b)	
 		checkError(err)
 		time.Sleep(150*time.Millisecond) // bytte til bare ved endringar etterhvert
@@ -252,6 +259,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		
 		//(*data).PrimaryQ[1:] = SortUp((*data).PrimaryQ[1:])
 		fmt.Println("PrimaryQ: ", (*data).PrimaryQ)
+		fmt.Println("Statuselen: ", len((*data).Statuses))
 		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
 		//SlaveChan<- 1
 		go ChannelFunc(SlaveChan)		
