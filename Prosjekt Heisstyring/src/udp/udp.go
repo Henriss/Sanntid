@@ -125,7 +125,7 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 	}
 	fmt.Println("Sjekk linje 126")
 	for {	
-		fmt.Println("Sjekk linje 128")
+		fmt.Println("Sjekk linje 128 og her er PrimaryQ: ", data.PrimaryQ)
 		n := make([]int,len(data.PrimaryQ)-1)
 		for i:=1;i<len(data.PrimaryQ);i++{
 			fmt.Println("Hører på heis ",data.PrimaryQ[i])
