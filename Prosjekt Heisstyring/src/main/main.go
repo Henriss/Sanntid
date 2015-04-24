@@ -10,12 +10,14 @@ import (
 	//"os"
 	//"sort"
 	"functions"
+	"time"
 )
 
 func main() {
 	fmt.Println("FINN ET BEDRE STED FOR RUNNING=0 I DAG")
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
+	test := time.Now()
+	fmt.Println(test)
 	fmt.Println(udp.GetID())
 		
 	//floorChan := make(chan int)
