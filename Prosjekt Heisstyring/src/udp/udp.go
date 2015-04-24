@@ -134,7 +134,7 @@ func PrimaryListen2(data *Data) {
 			n[i-1],err[i-1] = conn[i-1].Read(buffer)
 			fmt.Println("Sjekk linje 135")
 			if err[i-1] != nil {
-				data.Statuses = functions.UpdateStatusList(data.Statuses,GetIndex(data.Primary[i],data))
+				data.Statuses = UpdateStatusList(data.Statuses,GetIndex(data.Primary[i],data))
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				
 				err[i-1]=conn[i-1].Close()
@@ -357,6 +357,17 @@ func checkError(err error) {
 
 func ChannelFunc(Channel chan int) {
 	Channel <-1
+}
+func UpdateStatusList(OrderList []Status, j int) []int {
+	temp := make([]int, len(OrderList)-1)
+	for i:= 0; i<len(OrderList);i++ {
+		if i<j {
+			temp[i] = OrderList[i]
+		} else if i>j {
+			temp[i-1] = OrderList[i]
+		}
+	}
+	return temp
 }
 
 /*
