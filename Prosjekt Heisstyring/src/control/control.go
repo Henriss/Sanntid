@@ -96,6 +96,7 @@ func GoToFloor(floor int, status *udp.Status, list int) {
 					driver.SetButtonLamp((*status).ButtonList[0], floor, 0)
 					(*status).ButtonList = functions.UpdateList((*status).ButtonList,0)
 				}
+				fmt.Println("Heisen er framme på floor:", floor)
 				break
 		} else if floor > driver.GetFloorSensorSignal() && driver.GetFloorSensorSignal() != -1 && floor != -1 {   
 			driver.SetMotorDirection(driver.DIRN_UP) 
