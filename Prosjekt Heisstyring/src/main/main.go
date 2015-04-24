@@ -17,7 +17,7 @@ func main() {
 	fmt.Println("FINN ET BEDRE STED FOR RUNNING=0 I DAG")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	test := time.Now()
-	fmt.Println(test)
+	fmt.Println(test[12:19])
 	fmt.Println(udp.GetID())
 		
 	//floorChan := make(chan int)
