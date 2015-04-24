@@ -141,7 +141,7 @@ func ElevatorControl(status *udp.Status){
 		//ButtonList = ButtonList[:0]
 						
 		fmt.Printf("OrderList[0]: %d CommandList[0]: %d CurrentFloor: %d ID: %d \n",(*status).OrderList[0],(*status).CommandList[0], (*status).CurrentFloor, (*status).ID)
-		
+		fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
 			if !((*status).OrderList[0] == -1 && (*status).CommandList[0] ==-1){
 				fmt.Println("OrderList: ", (*status).CurrentFloor)
 				// 
