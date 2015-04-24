@@ -53,7 +53,7 @@ func main() {
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
 		go control.CostFunction(&Data)
-		go udp.CleanDeadSlaves(Data)
+		go udp.CleanDeadSlaves(&Data)
 	}
 
 	for {
