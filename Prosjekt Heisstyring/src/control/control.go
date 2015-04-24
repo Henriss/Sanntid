@@ -90,11 +90,11 @@ func GoToFloor(floor int, status *udp.Status, list int) {
 				time.Sleep(2*time.Second)
 				driver.SetDoorOpenLamp(false)
 				if floor == 0 || floor == 3 {
-					status.Running = 0
+					(*status).Running = 0
 				}
 				if list == 1 {
-					driver.SetButtonLamp(status.ButtonList[0], floor, 0)
-					status.ButtonList = functions.UpdateList(status.ButtonList,0)
+					driver.SetButtonLamp((*status).ButtonList[0], floor, 0)
+					(*status).ButtonList = functions.UpdateList((*status).ButtonList,0)
 				}
 				break
 		} else if floor > driver.GetFloorSensorSignal() && driver.GetFloorSensorSignal() != -1 && floor != -1 {   
@@ -103,7 +103,7 @@ func GoToFloor(floor int, status *udp.Status, list int) {
 			driver.SetMotorDirection(driver.DIRN_DOWN)
 		}
 		if driver.GetFloorSensorSignal() != -1{
-			status.CurrentFloor = driver.GetFloorSensorSignal()
+			(*status).CurrentFloor = driver.GetFloorSensorSignal()
 		}	
 	}
 }
@@ -115,97 +115,97 @@ func ElevatorControl(status *udp.Status){
 	temp = temp + 0
 	for {
 		if driver.GetFloorSensorSignal() != -1 {
-			status.CurrentFloor = driver.GetFloorSensorSignal()
+			(*status).CurrentFloor = driver.GetFloorSensorSignal()
 		}
 		//fmt.Println(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].CurrentFloor) 
 		//fmt.Println("control 109: OrderList",status.OrderList)
 		time.Sleep(1*time.Second)
 		
-		if len(status.CommandList) == 0 {
-			status.CommandList = append(status.CommandList, -1)
+		if len((*status).CommandList) == 0 {
+			(*status).CommandList = append((*status).CommandList, -1)
 		}
-		if len(status.OrderList)==0 {
-			status.OrderList = append(status.OrderList, -1)
+		if len((*status).OrderList)==0 {
+			(*status).OrderList = append((*status).OrderList, -1)
 			
 		}
-		if status.OrderList[0] == -1 && status.CommandList[0] == -1 {
+		if (*status).OrderList[0] == -1 && (*status).CommandList[0] == -1 {
 			
-			status.Running = 0
+			(*status).Running = 0
 		}
-		for i:=0;i<len(status.ButtonList);i++ {
-			fmt.Println("ButtonList(i): ",status.ButtonList[i])
-			driver.SetButtonLamp(status.ButtonList[i], status.OrderList[i], 1)
+		for i:=0;i<len((*status).ButtonList);i++ {
+			fmt.Println("ButtonList(i): ",(*status).ButtonList[i])
+			driver.SetButtonLamp((*status).ButtonList[i], (*status).OrderList[i], 1)
 		}
 		//ButtonList = ButtonList[:0]
 						
-		fmt.Printf("OrderList[0]: %d CommandList[0]: %d CurrentFloor: %d ID: %d \n",status.OrderList[0],status.CommandList[0], status.CurrentFloor, status.ID)
+		fmt.Printf("OrderList[0]: %d CommandList[0]: %d CurrentFloor: %d ID: %d \n",(*status).OrderList[0],(*status).CommandList[0], (*status).CurrentFloor, (*status).ID)
 		
-			if !(status.OrderList[0] == -1 && status.CommandList[0] ==-1){
-				fmt.Println("OrderList: ", status.CurrentFloor)
+			if !((*status).OrderList[0] == -1 && (*status).CommandList[0] ==-1){
+				fmt.Println("OrderList: ", (*status).CurrentFloor)
 				// 
-				if status.OrderList[0] > status.CurrentFloor  {
+				if (*status).OrderList[0] > (*status).CurrentFloor  {
 					//status.Running =1
 					//fmt.Println(data.Statuses[udp.GetIndex(data.PrimaryQ[i], data)].OrderList)
 					// Sjekker om heisens ordreliste
-					if status.CommandList[0] == -1{
-						temp = status.OrderList[0]
-						status.OrderList = functions.UpdateList(status.OrderList,0)
+					if (*status).CommandList[0] == -1{
+						temp = (*status).OrderList[0]
+						(*status).OrderList = functions.UpdateList((*status).OrderList,0)
 						
 						GoToFloor(temp, status,1)
 						temp = 0
-					}else if status.OrderList[0] == -1{
-						temp = status.CommandList[0]
-						status.CommandList = functions.UpdateList(status.CommandList,0)
+					}else if (*status).OrderList[0] == -1{
+						temp = (*status).CommandList[0]
+						(*status).CommandList = functions.UpdateList((*status).CommandList,0)
 						GoToFloor(temp, status,0)
 						temp = 0
-					}else if status.OrderList[0]>status.CommandList[0]{
-						temp = status.CommandList[0]
-						status.CommandList = functions.UpdateList(status.CommandList,0)	
+					}else if (*status).OrderList[0]>(*status).CommandList[0]{
+						temp = (*status).CommandList[0]
+						(*status).CommandList = functions.UpdateList((*status).CommandList,0)	
 						GoToFloor(temp, status,0)
 						temp = 0
-					}else if status.CommandList[0]>status.OrderList[0]{
-						temp = status.OrderList[0]
-						status.OrderList = functions.UpdateList(status.OrderList,0)
+					}else if (*status).CommandList[0]>(*status).OrderList[0]{
+						temp = (*status).OrderList[0]
+						(*status).OrderList = functions.UpdateList((*status).OrderList,0)
 						GoToFloor(temp, status,1)
 						temp = 0
-					}else if status.OrderList[0] == status.CommandList[0]{
-						temp = status.OrderList[0]
-						status.CommandList=functions.UpdateList(status.CommandList,0)
-						status.OrderList=functions.UpdateList(status.OrderList,0)
+					}else if (*status).OrderList[0] == (*status).CommandList[0]{
+						temp = (*status).OrderList[0]
+						(*status).CommandList=functions.UpdateList((*status).CommandList,0)
+						(*status).OrderList=functions.UpdateList((*status).OrderList,0)
 						GoToFloor(temp, status,1)
 						temp = 0
 					}
-				}else if status.OrderList[0] < status.CurrentFloor{
+				}else if (*status).OrderList[0] < (*status).CurrentFloor{
 					//status.Running = -1
-					if status.CommandList[0] == -1 {
-						temp = status.OrderList[0]
-						status.OrderList = functions.UpdateList(status.OrderList,0)
+					if (*status).CommandList[0] == -1 {
+						temp = (*status).OrderList[0]
+						(*status).OrderList = functions.UpdateList((*status).OrderList,0)
 						GoToFloor(temp, status,1)
 						temp = 0
-					}else if status.OrderList[0] == -1 {
-						temp = status.CommandList[0] 
-						status.CommandList = functions.UpdateList(status.CommandList,0)
+					}else if (*status).OrderList[0] == -1 {
+						temp = (*status).CommandList[0] 
+						(*status).CommandList = functions.UpdateList((*status).CommandList,0)
 						GoToFloor(temp, status,0)
 						temp = 0
-					}else if status.OrderList[0] < status.CommandList[0]{
-						temp = status.CommandList[0]
-						status.CommandList = functions.UpdateList(status.CommandList,0)
+					}else if (*status).OrderList[0] < (*status).CommandList[0]{
+						temp = (*status).CommandList[0]
+						(*status).CommandList = functions.UpdateList((*status).CommandList,0)
 						GoToFloor(temp, status,0)
 						temp = 0
-					}else if status.CommandList[0] < status.OrderList[0]{
-						temp = status.OrderList[0]
-						status.OrderList = functions.UpdateList(status.OrderList,0)
+					}else if (*status).CommandList[0] < (*status).OrderList[0]{
+						temp = (*status).OrderList[0]
+						(*status).OrderList = functions.UpdateList((*status).OrderList,0)
 						GoToFloor(temp, status,1)
 						temp = 0
-					}else if status.OrderList[0] == status.CommandList[0]{
-						temp = status.OrderList[0]
-						status.CommandList=functions.UpdateList(status.CommandList,0)
-						status.OrderList=functions.UpdateList(status.OrderList,0)
+					}else if (*status).OrderList[0] == (*status).CommandList[0]{
+						temp = (*status).OrderList[0]
+						(*status).CommandList=functions.UpdateList((*status).CommandList,0)
+						(*status).OrderList=functions.UpdateList((*status).OrderList,0)
 						GoToFloor(temp, status,1)
 						temp = 0						
 					}						
-				}else if 	status.OrderList[0] == driver.GetFloorSensorSignal() {
-						status.OrderList=functions.UpdateList(status.OrderList,0)
+				}else if 	(*status).OrderList[0] == driver.GetFloorSensorSignal() {
+						(*status).OrderList=functions.UpdateList((*status).OrderList,0)
 						GoToFloor(driver.GetFloorSensorSignal(), status,1)						
 				}
 			}
@@ -220,66 +220,66 @@ func GetDestination(status *udp.Status) { //returnerer bare button, orderlist op
 	//time.Sleep(1*time.Second)
 	for {	
 		for floor := 0; floor < driver.N_FLOORS; floor++ {
-				if driver.GetButtonSignal(0,floor) == 1 && len(status.UpList) == 0 {
-					status.UpList = append(status.UpList, floor) 
-				}else if driver.GetButtonSignal(0,floor) == 1 && len(status.UpList) > 0 {
-					if functions.CheckList(status.UpList,floor) == false {
-						status.UpList = append(status.UpList,floor)
-						fmt.Println("status.UpList: ", status.UpList) 
+				if driver.GetButtonSignal(0,floor) == 1 && len((*status).UpList) == 0 {
+					(*status).UpList = append((*status).UpList, floor) 
+				}else if driver.GetButtonSignal(0,floor) == 1 && len((*status).UpList) > 0 {
+					if functions.CheckList((*status).UpList,floor) == false {
+						(*status).UpList = append((*status).UpList,floor)
+						fmt.Println("status.UpList: ", (*status).UpList) 
 					}				
-				}else if driver.GetButtonSignal(1,floor) == 1 && len(status.DownList)==0 {	
-					status.DownList = append(status.DownList, floor)
-				}else if driver.GetButtonSignal(1,floor) == 1 && len(status.DownList) > 0 {
-					if functions.CheckList(status.DownList,floor) == false {
-						status.DownList = append(status.DownList,floor)
-						fmt.Println("status.DownList: ", status.DownList)
+				}else if driver.GetButtonSignal(1,floor) == 1 && len((*status).DownList)==0 {	
+					(*status).DownList = append((*status).DownList, floor)
+				}else if driver.GetButtonSignal(1,floor) == 1 && len((*status).DownList) > 0 {
+					if functions.CheckList((*status).DownList,floor) == false {
+						(*status).DownList = append((*status).DownList,floor)
+						fmt.Println("status.DownList: ", (*status).DownList)
 					}
-				}else if driver.GetButtonSignal(2,floor) == 1 && len(status.CommandList) == 0{
-						if status.Running == 0 {
-							if status.CurrentFloor < floor{
-								status.Running = 1
-								status.CommandList = append(status.CommandList,floor)
-							}else if status.CurrentFloor > floor{
-								status.Running = -1
-								status.CommandList = append(status.CommandList,floor) 
+				}else if driver.GetButtonSignal(2,floor) == 1 && len((*status).CommandList) == 0{
+						if (*status).Running == 0 {
+							if (*status).CurrentFloor < floor{
+								(*status).Running = 1
+								(*status).CommandList = append((*status).CommandList,floor)
+							}else if (*status).CurrentFloor > floor{
+								(*status).Running = -1
+								(*status).CommandList = append((*status).CommandList,floor) 
 							}else{
-								status.Running = 0
+								(*status).Running = 0
 							}
 						}else{
-							status.CommandList = append(status.CommandList, floor)
+							(*status).CommandList = append((*status).CommandList, floor)
 						}
-				}else if driver.GetButtonSignal(2,floor) == 1  && status.CommandList[0] == -1 {
-						if status.Running == 0{
-							if status.CurrentFloor < floor{
-								status.Running = 1
-								status.CommandList[0] = floor
-							}else if status.CurrentFloor > floor{
-								status.Running = -1
-								status.CommandList[0] = floor
+				}else if driver.GetButtonSignal(2,floor) == 1  && (*status).CommandList[0] == -1 {
+						if (*status).Running == 0{
+							if (*status).CurrentFloor < floor{
+								(*status).Running = 1
+								(*status).CommandList[0] = floor
+							}else if (*status).CurrentFloor > floor{
+								(*status).Running = -1
+								(*status).CommandList[0] = floor
 							}else{
-								status.Running = 0
+								(*status).Running = 0
 							}
 						}else{
-							status.CommandList[0] = floor
+							(*status).CommandList[0] = floor
 						}
-				}else if driver.GetButtonSignal(2,floor) == 1 && len(status.CommandList) > 0 {
-					if status.CommandList[len(status.CommandList)-1] != floor {
+				}else if driver.GetButtonSignal(2,floor) == 1 && len((*status).CommandList) > 0 {
+					if (*status).CommandList[len((*status).CommandList)-1] != floor {
 						//status.CommandList = append(status.CommandList, floor)
-						if status.Running == 1{
-							if floor <= status.CurrentFloor{
-								status.CommandList = functions.SortUp(status.CommandList)
-								status.CommandList = append(status.CommandList, floor)
+						if (*status).Running == 1{
+							if floor <= (*status).CurrentFloor{
+								(*status).CommandList = functions.SortUp((*status).CommandList)
+								(*status).CommandList = append((*status).CommandList, floor)
 							}else{
-								status.CommandList = append(status.CommandList, floor)
-								status.CommandList = functions.SortUp(status.CommandList)
+								(*status).CommandList = append((*status).CommandList, floor)
+								(*status).CommandList = functions.SortUp((*status).CommandList)
 							}
-						}else if status.Running == -1{
-							if floor >= status.CurrentFloor{
-								status.CommandList = functions.SortDown(status.CommandList)
-								status.CommandList = append(status.CommandList, floor)
+						}else if (*status).Running == -1{
+							if floor >= (*status).CurrentFloor{
+								(*status).CommandList = functions.SortDown((*status).CommandList)
+								(*status).CommandList = append((*status).CommandList, floor)
 							}else{
-								status.CommandList = append(status.CommandList, floor)
-								status.CommandList = functions.SortDown(status.CommandList)
+								(*status).CommandList = append((*status).CommandList, floor)
+								(*status).CommandList = functions.SortDown((*status).CommandList)
 							}
 						}
 					}
