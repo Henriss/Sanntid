@@ -183,7 +183,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 }
 
 func CleanDeadSlaves(data *Data) {
-	for {
+	for{
 		data.Statuses[0].LastUpdate = time.Now()
 		time.Sleep(3*time.Second)
 		for i:=1;len(data.PrimaryQ);i++{
