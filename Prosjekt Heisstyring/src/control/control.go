@@ -221,7 +221,7 @@ func ElevatorControl(status *udp.Status){
 func GetDestination(status *udp.Status) { //returnerer bare button, orderlist oppdateres
 	//time.Sleep(1*time.Second)
 	for {	
-		fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
+		
 		for floor := 0; floor < driver.N_FLOORS; floor++ {
 				if driver.GetButtonSignal(0,floor) == 1 && len((*status).UpList) == 0 {
 					(*status).UpList = append((*status).UpList, floor) 
@@ -327,6 +327,7 @@ func CostFunction(data *udp.Data) {
 	var DownList []int
 	var UpList []int
 	for {
+	fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
 	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
 	//fmt.Println("status.UpList i CostFunction: ",(*data).Statuses[udp.GetIndex((*data).PrimaryQ[0], data)].UpList)
