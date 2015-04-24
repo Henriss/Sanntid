@@ -326,7 +326,7 @@ func CostFunction(data *udp.Data) {
 	for {
 	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
-	fmt.Println("status.UpList i CostFunction: ",(*data).Statuses[udp.GetIndex((*data).PrimaryQ[0], data)].UpList)
+	//fmt.Println("status.UpList i CostFunction: ",(*data).Statuses[udp.GetIndex((*data).PrimaryQ[0], data)].UpList)
 	//fmt.Println("Lengden til statuses: ", len(data.Statuses))
 	//fmt.Println("PrimaryQ: ", data.PrimaryQ)
 	/*if len(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList) > 0 {
