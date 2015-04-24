@@ -18,7 +18,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	test := time.Now()
 	fmt.Println(test)
-	fmt.Println(test.Hour)
+	fmt.Println(test.Hour())
 	fmt.Println(test.Second())
 	fmt.Println(test.Minute())
 	fmt.Println(udp.GetID())
