@@ -162,6 +162,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
 	for {	
+		
 		//Println("HØRER")	
 		n, err := conn.Read(buffer)
 		checkError(err)
@@ -178,6 +179,19 @@ func PrimaryListen(data *Data, SortChan chan int) {
 			(*data).Statuses[GetIndex(temp.ID,data)] = temp.Statuses[GetIndex(temp.ID,data)]
 		}
 		//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
+	}
+}
+
+func CleanDeadSlaves(data *Data) {
+	for {
+		data.Statuses[0].LastUpdate = time.Now()
+		time.Sleep(3*time.Second)
+		for i:=1;len(data.PrimaryQ);i++{
+			if(functions.Delay(data.Statuses[udp.GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate)>2  {
+				data.PrimaryQ=functions.UpdateList(data.PrimaryQ,i)
+				data.Statuses = functions.UpdateStatusList(data.Statuses,udp.GetIndex(data.PrimaryQ[i],data))
+			}			
+		}		
 	}
 }
 
