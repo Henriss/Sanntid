@@ -182,12 +182,12 @@ func PrimaryListen(data *Data, SortChan chan int) {
 	}
 }
 
-func CleanDeadSlaves(data *Data) {
+func CleanDeadSlaves(data *Data){
 	for{
 		data.Statuses[0].LastUpdate = time.Now()
 		time.Sleep(3*time.Second)
 		for i:=1;len(data.PrimaryQ);i++{
-			if(functions.Delay(data.Statuses[udp.GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate)>2 {
+			if(functions.Delay(data.Statuses[udp.GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate)>2){
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				data.Statuses = functions.UpdateStatusList(data.Statuses,udp.GetIndex(data.PrimaryQ[i],data))
 			}			
