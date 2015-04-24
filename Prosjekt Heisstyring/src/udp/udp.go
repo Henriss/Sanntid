@@ -186,6 +186,7 @@ func CleanDeadSlaves(data *Data){
 	for{
 		data.Statuses[0].LastUpdate = time.Now()
 		time.Sleep(3*time.Second)
+		fmt.Println("Sjekker delay: ",functions.Delay(data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate))
 		for i:=1;i<len(data.PrimaryQ);i++{
 			if(functions.Delay(data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate,data.Statuses[0].LastUpdate)>2){
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
