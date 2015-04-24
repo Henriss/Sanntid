@@ -326,6 +326,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		go PrimaryBroadcast(baddr,data)
 	//	go PrimaryListen2(data)
 		go PrimaryListen(data, SortChan)
+		go CleanDeadSlaves(data)
 		
 		
 	
