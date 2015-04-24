@@ -350,9 +350,9 @@ func CostFunction(data *udp.Data) {
 			
 		}
 	}
-	//fmt.Println("control 258: PrimaryQ i cost function: ", data.PrimaryQ)
-	//fmt.Println("control 259: Down List i cost function: ", DownList)
-	time.Sleep(1*time.Second)
+	fmt.Println("control 258: OppList i cost function: ", UpList)
+	fmt.Println("control 259: Down List i cost function: ", DownList)
+	//time.Sleep(1*time.Second)
 	
 	if len(UpList) > 0 {
 		UpList = functions.SortUp(UpList)
