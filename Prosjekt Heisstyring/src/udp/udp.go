@@ -170,7 +170,29 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 }
 
 
-
+func SlaveAlive(data *Data) {
+	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+ strconv.Itoa((*data).PrimaryQ[0]) + ":"+strconv.Itoa(GetID()+30000)
+	conn, err := net.DialUDP("udp",nil, udpAddr)
+	checkError(err)
+	for {
+		 //WRITE
+		(*data).ID = GetID()
+		fmt.Println("Data.ID før sending",(*data).ID)
+		
+		
+		b,_ := json.Marshal(*data)
+		// Må endre detta til å bare slette når confirmation på ordre kommer, confirmation kan vere samma som lampe lista??
+		(*data).Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
+		(*data).Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
+		
+		conn.Write(b)	
+		checkError(err)
+		time.Sleep(150*time.Millisecond) // bytte til bare ved endringar etterhvert
+		if (*data).Statuses[GetIndex(GetID(), data)].Primary == true {
+			break
+		}
+	}
+}
 func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endringar
 	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187."+ strconv.Itoa((*data).PrimaryQ[0]) + ":39999")
 	conn, err := net.DialUDP("udp",nil, udpAddr)
