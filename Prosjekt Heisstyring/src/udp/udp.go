@@ -201,7 +201,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], data)		
 		fmt.Println("her er primaryQen:", (*data).PrimaryQ)
-		fmt.Println("Her er ny OrderList: ", (*data).Statuses[GetIndex(GetID(),data)].OrderList)
+		//fmt.Println("Her er ny OrderList: ", (*data).Statuses[GetIndex(GetID(),data)].OrderList)
 		fmt.Println("Index: ", GetIndex(GetID(),data))	
 		// Printf("Rcv %d bytes: %s\n",n, buffer)	
 	}	
