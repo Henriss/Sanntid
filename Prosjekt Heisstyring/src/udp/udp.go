@@ -125,9 +125,9 @@ func PrimaryListen2(data *Data, SortChan chan int) {
 	for {
 		n := make([]int,len(data.PrimaryQ)-1)
 		for i:=1;i<len(data.PrimaryQ);i++{
-			Println("Hører på heis ",data.PrimaryQ[i])
+			fmt.Println("Hører på heis ",data.PrimaryQ[i])
 			conn[i-1].SetReadDeadLine(time.Now().Add(3*time.Second))
-			n[i-1],err[i-1] = conn.Read(buffer)
+			n[i-1],err[i-1] = conn[i-1].Read(buffer)
 			if err[i-1] != nil {
 				data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
 				conn[i-1].close()
