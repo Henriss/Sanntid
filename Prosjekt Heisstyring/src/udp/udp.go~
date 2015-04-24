@@ -124,7 +124,7 @@ func PrimaryListen(data *Data, SortChan chan int) {
 		checkError(err)
 		//Data = buffer
 		err = json.Unmarshal(buffer[0:n], temp)
-		fmt.Println("TEMP ID: ", temp.ID)
+		fmt.Println("TEMP ID: ", (*temp).ID)
 		if functions.CheckList((*data).PrimaryQ,temp.ID)==false {//temp.PrimaryQ[len(temp.PrimaryQ)-1] != (*data).PrimaryQ[len(temp.PrimaryQ)-1]{ //&& len(temp.PrimaryQ) > len((*data).PrimaryQ) {
 			fmt.Println("Her?")
 			(*data).PrimaryQ = append((*data).PrimaryQ, temp.PrimaryQ...) //PrimaryQ[1:]...)
@@ -178,6 +178,7 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 	for {
 		 //WRITE
 		(*data).ID = GetID()
+		fmt.Println("Data.ID før sending",(*data).ID)
 		b,_ := json.Marshal(*data)
 		(*data).Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
 		(*data).Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]

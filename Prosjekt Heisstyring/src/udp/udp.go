@@ -178,7 +178,8 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 	for {
 		 //WRITE
 		(*data).ID = GetID()
-		b,_ := json.Marshal(data)
+		fmt.Println("Data.ID før sending",(*data).ID)
+		b,_ := json.Marshal(*data)
 		(*data).Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
 		(*data).Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
 		
@@ -197,7 +198,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 	var status Status
 	//data.Statuses = append(data.Statuses, temp)
 	status.Primary = false
-		
+	(*data).ID = GetID()	
 	SetStatus(&status,0,driver.GetFloorSensorSignal())	
 	//InitStatus(*Status)
 	//Println("SE HER::::: ", (Status).ID)
