@@ -179,6 +179,9 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 		 //WRITE
 		(*data).ID = GetID()
 		fmt.Println("Data.ID før sending",(*data).ID)
+		time.Sleep(1*time.Second)
+		fmt.Println("Data.ID før sending",(*data).ID)
+		
 		b,_ := json.Marshal(*data)
 		(*data).Statuses[GetIndex(GetID(), data)].UpList = (*data).Statuses[GetIndex(GetID(), data)].UpList[:0]
 		(*data).Statuses[GetIndex(GetID(),data)].DownList = (*data).Statuses[GetIndex(GetID(), data)].DownList[:0]
