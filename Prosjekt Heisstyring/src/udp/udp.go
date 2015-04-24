@@ -22,6 +22,7 @@ type Status struct {
 	NextFloor int
 	Primary bool
 	ID int
+	IsAlive int
 	//PrimaryQ [3]string
 	CommandList []int
 	UpList []int  // slice = slice[:0] for å tømme slicen når sendt til primary
@@ -45,6 +46,7 @@ func SetStatus(status *Status, running int, NextFloor int) {
 	(*status).CurrentFloor = driver.GetFloorSensorSignal()
 	(*status).NextFloor = NextFloor
 	(*status).ID = GetID()
+	
 	
 	/*
 	(*data).Statuses[GetIndex(GetID(), data)].Running = running
