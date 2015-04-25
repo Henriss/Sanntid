@@ -231,6 +231,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		fmt.Println("Her er PriBroad: ",temp.PriBroad)
 		if(temp.PriBroad == false){
 			*data = temp
+			fmt.Println("Mottat fra SendOrder: ", data.Statuses[GetIndex(GetID(),data)])
 		}else{
 			data.Statuses[0] = temp.Statuses[0]
 		}		
@@ -265,7 +266,7 @@ func SlaveUpdate(data *Data) { // chan muligens, bare oppdatere når det er endr
 	for {
 		 //WRITE
 		(*data).ID = GetID()
-		fmt.Println("Data.ID før sending",(*data).ID)
+		//fmt.Println("Data.ID før sending",(*data).ID)
 		
 		
 		b,_ := json.Marshal(*data)
