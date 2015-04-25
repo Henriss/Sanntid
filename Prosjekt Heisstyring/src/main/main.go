@@ -48,18 +48,17 @@ func main() {
 	//PrimaryChan<- 1
 	//SlaveChan<-1
 	fmt.Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),&Data))
-	Data.Lock.Lock()
+	
 	go control.GetDestination(&Data)
-	Data.Lock.Unlock()
-	Data.Lock.Lock()
+	
 	go control.ElevatorControl(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
-	Data.Lock.Unlock()
+
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if(Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary){
 
-		Data.Lock.Lock()
+		
 		go control.CostFunction(&Data)
-		Data.Lock.Unlock()
+		
 		//go udp.CleanDeadSlaves(&Data)
 	}
 
@@ -68,9 +67,9 @@ func main() {
 		select {
 			case <-PrimaryChan:
 					Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary = true
-					Data.Lock.Lock()
+					
 					go control.CostFunction(&Data) 
-					Data.Lock.Unlock()
+					
 			case <-SlaveChan:
 				
 			case <- SortChan:
