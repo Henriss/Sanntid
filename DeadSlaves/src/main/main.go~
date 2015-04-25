@@ -70,9 +70,9 @@ func main() {
 					data.PrimaryQ = append(data.PrimaryQ, temp...)
 					fmt.Println(data.PrimaryQ)
 				}
-			case dataIn := <-dataOut:
-				fmt.Println("Er i main og har tatt imot fra????")
-				dataIn<- temp
+			//case dataIn := <-dataOut:
+				//fmt.Println("Er i main og har tatt imot fra????")
+				//dataIn<- temp
 				//statusIn<- &data.Statuses[udp.GetIndex(udp.GetID(), &Data)]
 				//dataIn<-
 			//case <-statusOut	

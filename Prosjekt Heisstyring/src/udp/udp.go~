@@ -35,6 +35,7 @@ type Status struct {
 type Data struct {
 	//Status Status
 	//Timestamp???????
+	PriBroad bool
 	ID int
 	Statuses []Status // Oppdatere den her å i UdpInit()
 	PrimaryQ []int
@@ -85,6 +86,7 @@ func GetID() int {
 /////////// Primary functions ////////////
 
 func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere backup for alle
+	data.PriBroad = true
 	//var temp Data
 	//udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187.255:39998")
 	//checkError(err)
@@ -105,6 +107,7 @@ func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere ba
 }
 
 func SendOrderlist(data *Data,index int) { // IMALIVE
+	data.PriBroad = false
 	udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187.255:39998")//+strconv.Itoa(data.PrimaryQ[index])+":39998")
 	bconn, err := net.DialUDP("udp",nil, udpAddr)
 	checkError(err)
@@ -202,6 +205,7 @@ func CleanDeadSlaves(data *Data){
 
 func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, PrimaryChan chan int, SortChan chan int) { // Bruke chan muligens fordi den skal skrive til Data
 	buffer := make([]byte, 1024)
+	var temp Data
 	//udpAddr, err := net.ResolveUDPAddr("udp", ":39998")
 	//conn, err := net.ListenUDP("udp", udpAddr)
 	//checkError(err)
@@ -221,11 +225,16 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 			break
 		}
 		//Data = buffer
-		err = json.Unmarshal(buffer[0:n], data)		
-		fmt.Println("her er primaryQen:", (*data).PrimaryQ)
-		//fmt.Println("Her er ny OrderList: ", (*data).Statuses[GetIndex(GetID(),data)].OrderList)
-		fmt.Println("Index: ", GetIndex(GetID(),data))	
-		// Printf("Rcv %d bytes: %s\n",n, buffer)	
+		
+		err = json.Unmarshal(buffer[0:n], &temp)		
+		fmt.Println("her er primaryQen:", (*temp).PrimaryQ)
+		fmt.Println("Her er PriBroad: ",temp.PriBroad)
+		if(temp.PriBroad == false){
+			data = &temp
+		}
+		else{
+		
+		}		
 	}	
 }
 
@@ -327,7 +336,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		go PrimaryBroadcast(baddr,data)
 	//	go PrimaryListen2(data)
 		go PrimaryListen(data, SortChan)
-		go CleanDeadSlaves(data)
+		
 		
 		
 	

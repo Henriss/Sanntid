@@ -118,6 +118,7 @@ func PrimaryListen(dataIn chan Data, dataOut chan Data, SortChan chan int) {
 	buffer := make([]byte, 1024)
 	tempo :=make([]Status,1)
 	//var data Data
+	
 	fmt.Println("udp: 121. primaryListen, Ventar her")
 	data := <-dataIn
 	fmt.Println("udp: 123. primaryListen, Går vidare")
@@ -152,6 +153,14 @@ func PrimaryListen(dataIn chan Data, dataOut chan Data, SortChan chan int) {
 			}else{
 				tempData.Statuses[GetIndex(temp.ID,data)] = temp.Statuses[GetIndex(temp.ID,data)]
 			}
+			data.Statuses[0].LastUpdate = time.Now()
+			for i:=1;i<len(data.PrimaryQ);i++{
+				fmt.Printf("Delay i heis %d: %d\n",data.PrimaryQ[i],functions.Delay(data.Statuses[0].LastUpdate,data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate))
+				if(functions.Delay(data.Statuses[0].LastUpdate,data.Statuses[GetIndex(data.PrimaryQ[i],data)].LastUpdate)>5){
+					data.Statuses =  UpdateStatusList(data.Statuses,GetIndex(data.PrimaryQ[i],data))
+					data.PrimaryQ = functions.UpdateList(data.PrimaryQ,i)
+				}
+			}	
 			//(*data).Statuses[GetIndex((*data).Status.ID,data)] = (*data).Status // Oppdaterar mottatt status hos primary 
 		}
 	}
