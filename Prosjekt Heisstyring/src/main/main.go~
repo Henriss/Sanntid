@@ -56,6 +56,11 @@ func main() {
 	Data.Lock.Unlock()
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
+		if len(data.Statuses >1)c{	
+			data.Statuses[1].OrderList = append(data.Statuses[1].OrderList,3)
+			udp.SendOrderList(data,1)
+			data.Statuses[1].OrderList = functions.UpdateList(data.Statuses[1].OrderList,0)
+			}
 		Data.Lock.Lock()
 		go control.CostFunction(&Data)
 		Data.Lock.Unlock()
