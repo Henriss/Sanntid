@@ -52,7 +52,9 @@ func main() {
 	go control.ElevatorControl(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
+		data.Lock.Lock()
 		go control.CostFunction(&Data)
+		data.Lock.Unlock()
 		//go udp.CleanDeadSlaves(&Data)
 	}
 
@@ -61,8 +63,9 @@ func main() {
 		select {
 			case <-PrimaryChan:
 					Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary = true
-					
+					data.Lock.Lock()
 					go control.CostFunction(&Data) 
+					data.Lock.Unlock()
 			case <-SlaveChan:
 				
 			case <- SortChan:
