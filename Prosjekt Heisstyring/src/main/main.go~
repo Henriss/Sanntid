@@ -59,7 +59,7 @@ func main() {
 		if len(Data.Statuses) >1{	
 			for {
 				Data.Statuses[1].OrderList = append(Data.Statuses[1].OrderList,3)
-				udp.SendOrderlist(*Data,1)
+				udp.SendOrderlist(Data,1)
 				Data.Statuses[1].OrderList = functions.UpdateList(Data.Statuses[1].OrderList,0)
 			}
 		}
