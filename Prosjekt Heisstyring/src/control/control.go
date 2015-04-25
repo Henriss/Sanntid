@@ -328,6 +328,18 @@ func CostFunction(data *udp.Data) {
 	var DownList []int
 	var UpList []int
 	for {
+	
+	if(Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary){
+		if len(Data.Statuses) >1{	
+			for {
+				Data.Statuses[1].OrderList = append(Data.Statuses[1].OrderList,3)
+				udp.SendOrderlist(&Data,1)
+				Data.Statuses[1].OrderList = functions.UpdateList(Data.Statuses[1].OrderList,0)
+			}
+		}
+		
+	}
+	
 	//fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
 	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
