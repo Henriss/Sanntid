@@ -356,7 +356,7 @@ func CostFunction(data *udp.Data) {
 		if udp.GetIndex((*data).PrimaryQ[k],data) != -1 {
 			//fmt.Println(udp.GetIndex(data.PrimaryQ[0], data))
 			DownList = append(DownList,(*data).Statuses[udp.GetIndex((*data).PrimaryQ[k], data)].DownList...)
-			Println("DOWN LIST I DEN JÆVLA FOR LØKKA!: ",(*data).Statuses[udp.GetIndex((*data).PrimaryQ[k], data)].DownList)
+			fmt.Println("DOWN LIST I DEN JÆVLA FOR LØKKA!: ",(*data).Statuses[udp.GetIndex((*data).PrimaryQ[k], data)].DownList)
 			(*data).Statuses[udp.GetIndex((*data).PrimaryQ[k], data)].DownList = (*data).Statuses[udp.GetIndex((*data).PrimaryQ[k], data)].DownList[:0]
 
 			UpList = append(UpList,(*data).Statuses[udp.GetIndex((*data).PrimaryQ[k], data)].UpList...)
