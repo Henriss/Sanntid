@@ -92,10 +92,10 @@ func GoToFloor(floor int, status *udp.Status, list int) {
 				if floor == 0 || floor == 3 {
 					(*status).Running = 0
 				}
-				if list == 1 {
+			/*	if list == 1 {
 					driver.SetButtonLamp((*status).ButtonList[0], floor, 0)
 					(*status).ButtonList = functions.UpdateList((*status).ButtonList,0)
-				}
+				}*/
 				fmt.Println("Heisen er framme på floor:", floor)
 				break
 		} else if floor > driver.GetFloorSensorSignal() && driver.GetFloorSensorSignal() != -1 && floor != -1 {   
