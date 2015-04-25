@@ -511,7 +511,7 @@ for up:=0; up<len(UpList);up++ {
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 					fmt.Printf("Sender ordre til heis %d om å gå til %d\n",data.PrimaryQ[i],i)
-					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList = functions.SortUp((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList))
+					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList)
 				}
 				handled = 1
 				break 
@@ -529,7 +529,7 @@ for up:=0; up<len(UpList);up++ {
 				if i != 0 {
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 					fmt.Printf("Sender ordre til heis %d om å gå til %d\n",data.PrimaryQ[i],i)
-					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList = functions.SortUp((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList))
+					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList)
 				}
 				handled = 1
 				break 
@@ -546,7 +546,7 @@ for up:=0; up<len(UpList);up++ {
 				(*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].ButtonList = append((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].ButtonList,0)
 				if i != 0 {
 					fmt.Printf("Sender ordre til heis %d om å gå til %d\n",data.PrimaryQ[i],i)
-					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList = functions.SortUp((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList))
+					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList)
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				handled = 1
@@ -563,7 +563,7 @@ for up:=0; up<len(UpList);up++ {
 				(*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].ButtonList = append((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].ButtonList,0)
 				if i != 0 {
 					fmt.Printf("Sender ordre til heis %d om å gå til %d\n",data.PrimaryQ[i],i)
-					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList = functions.SortUp((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList))
+					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList)
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				
 				}
@@ -622,7 +622,7 @@ for up:=0; up<len(UpList);up++ {
 				(*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].ButtonList = append((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].ButtonList,0)
 				if i != 0 {
 					fmt.Printf("Sender ordre til heis %d om å gå til %d\n",data.PrimaryQ[i],i)
-					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList = functions.SortUp((*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList))
+					fmt.Println("Men Order list er: ", (*data).Statuses[udp.GetIndex((*data).PrimaryQ[i], data)].OrderList)
 					udp.SendOrderlist(data,i) // , udp.GetIndex(data.PrimaryQ[i], data))
 				}
 				UpList = functions.UpdateList(UpList,up)
