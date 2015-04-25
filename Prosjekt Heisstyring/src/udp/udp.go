@@ -13,6 +13,7 @@ import ("fmt" // Using '.' to avoid prefixing functions with their package names
 	"encoding/json"
 	//"sort"
 	"functions"
+	"sync"
 	
 )
 
@@ -35,6 +36,7 @@ type Status struct {
 type Data struct {
 	//Status Status
 	//Timestamp???????
+	Lock sync.Mutex
 	PriBroad bool
 	ID int
 	Statuses []Status // Oppdatere den her å i UdpInit()

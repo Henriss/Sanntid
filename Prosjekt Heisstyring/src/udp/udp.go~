@@ -221,7 +221,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 			go PrimaryBroadcast(baddr, data)
 			go PrimaryListen(data, SortChan)
 			// SendOrderlist(Data)
-			PrimaryChan<- 1
+			go ChannelFunc(PrimaryChan)
 			break
 		}
 		//Data = buffer
