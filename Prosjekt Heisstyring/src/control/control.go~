@@ -383,8 +383,8 @@ func CostFunction(data *udp.Data) {
 	fmt.Println("Uplist: ",UpList)
 	fmt.Println("Downlist: ",DownList)
 	//if(len(data.Statuses)>1){
-		fmt.Println("Status.CurrentFloor til Primary: ",data.Statuses[0].CurrentFloor)
-		fmt.Println("Status.CurrentFloor til den andre heisen: ",data.Statuses[1].CurrentFloor)
+		//fmt.Println("Status.CurrentFloor til Primary: ",data.Statuses[0].CurrentFloor)
+		//fmt.Println("Status.CurrentFloor til den andre heisen: ",data.Statuses[1].CurrentFloor)
 	//}
 	//fmt.Println("OrderList: ", data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList)
 	/*if(len(data.PrimaryQ) > 1){
