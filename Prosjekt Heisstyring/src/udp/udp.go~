@@ -364,7 +364,7 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		//go SlaveAlive(data)
 		data.Lock.Lock()
 		go SlaveUpdate(data)
-		data.Lock.Unlcok()
+		data.Lock.Unlock()
 		time.Sleep(2500*time.Millisecond) // Vente for å la Primary oppdatere PrimaryQen
 		data.Lock.Lock()
 		go ListenForPrimary(broadcastListenConn, baddr, data,PrimaryChan, SortChan)
