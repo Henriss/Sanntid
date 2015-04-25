@@ -329,12 +329,12 @@ func CostFunction(data *udp.Data) {
 	var UpList []int
 	for {
 	
-	if(Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary){
-		if len(Data.Statuses) >1{	
+	if(data.Statuses[udp.GetIndex(udp.GetID(), data)].Primary){
+		if len(data.Statuses) >1{	
 			for {
-				Data.Statuses[1].OrderList = append(Data.Statuses[1].OrderList,3)
-				udp.SendOrderlist(&Data,1)
-				Data.Statuses[1].OrderList = functions.UpdateList(Data.Statuses[1].OrderList,0)
+				data.Statuses[1].OrderList = append(data.Statuses[1].OrderList,3)
+				udp.SendOrderlist(data,1)
+				data.Statuses[1].OrderList = functions.UpdateList(data.Statuses[1].OrderList,0)
 			}
 		}
 		
