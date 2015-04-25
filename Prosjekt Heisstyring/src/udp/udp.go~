@@ -358,11 +358,17 @@ func UdpInit(localListenPort int, broadcastListenPort int, message_size int, dat
 		fmt.Println("Statuselen: ", len((*data).Statuses))
 		//(*Data).PrimaryQ = append((*Data).PrimaryQ, string(buffer))
 		//SlaveChan<- 1
-		go ChannelFunc(SlaveChan)		
+		data.Lock.Lock()
+		go ChannelFunc(SlaveChan)
+		data.Lock.Unlock()		
 		//go SlaveAlive(data)
+		data.Lock.Lock()
 		go SlaveUpdate(data)
+		data.Lock.Unlcok()
 		time.Sleep(2500*time.Millisecond) // Vente for å la Primary oppdatere PrimaryQen
+		data.Lock.Lock()
 		go ListenForPrimary(broadcastListenConn, baddr, data,PrimaryChan, SortChan)
+		data.Lock.Unlock()
 	}
 	
 
