@@ -56,10 +56,10 @@ func main() {
 	Data.Lock.Unlock()
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if(Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary){
-		if len(Data.Statuses >1){	
+		if len(Data.Statuses) >1{	
 			for {
 				data.Statuses[1].OrderList = append(Data.Statuses[1].OrderList,3)
-				udp.SendOrderlist(Data,1)
+				udp.SendOrderlist(*Data,1)
 				data.Statuses[1].OrderList = functions.UpdateList(Data.Statuses[1].OrderList,0)
 			}
 		}
