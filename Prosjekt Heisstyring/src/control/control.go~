@@ -301,6 +301,9 @@ func GetDestination(status *udp.Status) { //returnerer bare button, orderlist op
 			driver.SetMotorDirection(driver.DIRN_STOP)
 			break
 		}
+		if(len(status.DownList)>0)
+			fmt.Println("Skjer det i det hele tatt noe med den jævla lista her inne?: ",status.DownList)
+		}
 	}
 
 }
