@@ -375,13 +375,15 @@ func CostFunction(data *udp.Data) {
 	}
 	
 	if len(UpList) > 0 {
+		fmt.Println("Uplist: ",UpList)
 		UpList = functions.SortUp(UpList)
 	}
 	if len(DownList) > 0 {
+		fmt.Println("Downlist: ",DownList)
 		DownList = functions.SortDown(DownList)
 	}
-	fmt.Println("Uplist: ",UpList)
-	fmt.Println("Downlist: ",DownList)
+	
+	
 	//if(len(data.Statuses)>1){
 		//fmt.Println("Status.CurrentFloor til Primary: ",data.Statuses[0].CurrentFloor)
 		//fmt.Println("Status.CurrentFloor til den andre heisen: ",data.Statuses[1].CurrentFloor)
