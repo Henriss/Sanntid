@@ -231,8 +231,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		fmt.Println("Her er PriBroad: ",temp.PriBroad)
 		if(temp.PriBroad == false){
 			*data = temp
-		}
-		else{
+		}else{
 			data.Statuses[0] = temp.Statuses[0]
 		}		
 	}	
