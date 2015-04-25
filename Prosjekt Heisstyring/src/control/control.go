@@ -351,7 +351,7 @@ func CostFunction(data *udp.Data) {
 			data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList = UpdateList(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList, 0)
 		}
 	}*/
-	data.Lock.Lock()
+
 	for k := 0; k < len((*data).PrimaryQ);k++ {
 		if udp.GetIndex((*data).PrimaryQ[k],data) != -1 {
 			//fmt.Println(udp.GetIndex(data.PrimaryQ[0], data))
@@ -363,7 +363,7 @@ func CostFunction(data *udp.Data) {
 			
 		}
 	}
-	data.Lock.Unlock()
+	
 	
 	if len(UpList) > 0 || len(DownList) > 0{
 		//fmt.Println("status.UpList i CostFunction: ",data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].UpList)
@@ -380,7 +380,12 @@ func CostFunction(data *udp.Data) {
 	if len(DownList) > 0 {
 		DownList = functions.SortDown(DownList)
 	}
-	
+	//fmt.Println("Uplist: ",UpList)
+	//fmt.Println("Downlist: ",DownList)
+	if(len(data.Statuses)>1){
+		fmt.Println("Status.CurrentFloor til Primary: ",data.Statuses[0].CurrentFloor)
+		fmt.Println("Status.CurrentFloor til den andre heisen: ",data.Statuses[1].CurrentFloor)
+	}
 	//fmt.Println("OrderList: ", data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList)
 	/*if(len(data.PrimaryQ) > 1){
 		data.Statuses[1].OrderList = append(data.Statuses[1].OrderList,3)
