@@ -1,0 +1,122 @@
+//Sanntidsprogrammering!!
+package main
+
+import ( 
+	"fmt"
+	"udp"
+	"driver"
+	"control"
+	"runtime" 
+	//"net"
+	//"os"
+	//"sort"
+	"functions"
+)
+
+
+
+func main() {
+	fmt.Println("FINN ET BEDRE STED FOR RUNNING=0 I GÅR")
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	fmt.Println(udp.GetID())
+		
+	//floorChan := make(chan int)
+	var data udp.Data
+	dataIn, dataOut := make(chan udp.Data), make(chan udp.Data)
+	//statusIn, statusOut := make(chan *udp.Status), make(chan *udp.Status)
+	PrimaryChan := make(chan int)
+	SlaveChan := make(chan int)
+	SortChan := make(chan int)
+	
+	if driver.InitElevator() == 0 {
+		fmt.Println("Unable to initialize elevator hardware!")
+	return
+	}
+	udp.UdpInit(30169, 39998, 1024, &data, dataIn, dataOut, PrimaryChan,SlaveChan, SortChan)
+	
+	if(data.Statuses[udp.GetIndex(udp.GetID(),data)].CurrentFloor == -1){
+		control.GoToFloor(0,&data.Statuses[udp.GetIndex(udp.GetID(),data)],0)	
+	}
+	fmt.Println("Ferdig med å initialisere")	
+
+	fmt.Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),data))
+	
+	go control.GetDestination(&(data.Statuses[udp.GetIndex(udp.GetID(),data)]))
+	go control.ElevatorControl(&(data.Statuses[udp.GetIndex(udp.GetID(), data)])) //statusIn, statusOut)
+	
+	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), data))
+	
+	if data.Statuses[udp.GetIndex(udp.GetID(), data)].Primary {
+		fmt.Println("Setter igang PrimaryListen og Costfunction")
+		go udp.PrimaryListen(dataIn, dataOut, SortChan)
+		go control.CostFunction(dataIn, dataOut)
+		dataIn <- data
+		fmt.Println("kommet gjennom?")
+	}
+
+	for {
+		fmt.Println("for loop")
+		select {
+			case <-PrimaryChan:
+				data.Statuses[udp.GetIndex(udp.GetID(), data)].Primary = true
+				go control.CostFunction(dataIn, dataOut) 
+			case <-SlaveChan:
+				
+			case <-SortChan: // passe på å omsortere Statuses og
+				if len(data.PrimaryQ)  > 1{
+					temp := functions.SortUp(data.PrimaryQ[1:])
+					data.PrimaryQ = data.PrimaryQ[:1]
+					data.PrimaryQ = append(data.PrimaryQ, temp...)
+					fmt.Println(data.PrimaryQ)
+				}
+			case dataIn := <-dataOut:
+				fmt.Println("Er i main og har tatt imot fra????")
+				dataIn<- temp
+				//statusIn<- &data.Statuses[udp.GetIndex(udp.GetID(), &Data)]
+				//dataIn<-
+			//case <-statusOut	
+			//default:
+				//fmt.Println("default case")
+		}
+	}
+	
+
+	
+	
+	
+	
+	fmt.Println("Press STOP button to stop elevator and exit program.")
+	
+	//if Status.Primary == true {
+	//	go udp.Send()
+	//} else {
+	//	go udp.Listen()
+	//}	
+		
+	//go control.GoToFloor(2,floorChan,&Data)
+	
+	/*
+	for {
+		//_, temp := control.GetCommand()
+		//floorChan<- temp
+		//PrintStatus(Data.Status)
+		fmt.Println("Stop signal pressed ", driver.GetStopSignal())
+		if driver.GetStopSignal() != 0 {
+			fmt.Println("Stop signal pressed ", driver.GetStopSignal())			
+			driver.SetMotorDirection(driver.DIRN_STOP)
+			break
+		}
+	
+	}
+	*/
+}		 
+
+func PrintStatus(Status udp.Status) {
+	fmt.Println("Running: ", Status.Running)
+	fmt.Println("CurrentFloor: ", Status.CurrentFloor)
+	fmt.Println("NextFloor: ", Status.NextFloor)
+	fmt.Println("Primary: ", Status.Primary)
+	fmt.Println("ID: ", Status.ID)
+	fmt.Println("OrderList: ", Status.OrderList)
+}
