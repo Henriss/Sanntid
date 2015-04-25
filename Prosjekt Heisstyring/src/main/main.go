@@ -51,7 +51,7 @@ func main() {
 	
 	go control.GetDestination(&Data)
 	
-	go control.ElevatorControl(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	go control.ElevatorControl(&Data)
 
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if(Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary){
