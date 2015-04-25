@@ -330,7 +330,7 @@ func CostFunction(data *udp.Data) {
 	var UpList []int
 	for {
 	if len((*data).Statuses[udp.GetIndex((*data).PrimaryQ[0], data)].DownList)>0{
-		fmt.Println((*data).Statuses[udp.GetIndex((*data).PrimaryQ[0], data)].DownList)
+		fmt.Println("DownList i cost function: ",(*data).Statuses[udp.GetIndex((*data).PrimaryQ[0], data)].DownList)
 	}	/*
 	if(data.Statuses[udp.GetIndex(udp.GetID(), data)].Primary){
 		if len(data.Statuses) >1{	
