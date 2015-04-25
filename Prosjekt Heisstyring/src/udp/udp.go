@@ -227,7 +227,7 @@ func ListenForPrimary(bconn *net.UDPConn, baddr *net.UDPAddr, data *Data, Primar
 		//Data = buffer
 		
 		err = json.Unmarshal(buffer[0:n], &temp)		
-		fmt.Println("her er primaryQen:", (*temp).PrimaryQ)
+		fmt.Println("her er primaryQen:", temp.PrimaryQ)
 		fmt.Println("Her er PriBroad: ",temp.PriBroad)
 		if(temp.PriBroad == false){
 			*data = temp
