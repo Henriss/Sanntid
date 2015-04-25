@@ -58,9 +58,9 @@ func main() {
 	if(Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary){
 		if len(Data.Statuses) >1{	
 			for {
-				data.Statuses[1].OrderList = append(Data.Statuses[1].OrderList,3)
+				Data.Statuses[1].OrderList = append(Data.Statuses[1].OrderList,3)
 				udp.SendOrderlist(*Data,1)
-				data.Statuses[1].OrderList = functions.UpdateList(Data.Statuses[1].OrderList,0)
+				Data.Statuses[1].OrderList = functions.UpdateList(Data.Statuses[1].OrderList,0)
 			}
 		}
 		Data.Lock.Lock()
