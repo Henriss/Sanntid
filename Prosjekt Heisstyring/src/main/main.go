@@ -48,8 +48,12 @@ func main() {
 	//PrimaryChan<- 1
 	//SlaveChan<-1
 	fmt.Println("MIN INDEX ER: ", udp.GetIndex(udp.GetID(),&Data))
+	Data.Lock.Lock()
 	go control.GetDestination(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	Data.Lock.Unlock()
+	Data.Lock.Lock()
 	go control.ElevatorControl(&(Data.Statuses[udp.GetIndex(udp.GetID(),&Data)]))
+	Data.Lock.Unlock()
 	fmt.Println("index fra main: ", udp.GetIndex(udp.GetID(), &Data))
 	if Data.Statuses[udp.GetIndex(udp.GetID(), &Data)].Primary {
 		Data.Lock.Lock()
