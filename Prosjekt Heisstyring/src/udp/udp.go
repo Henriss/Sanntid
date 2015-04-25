@@ -88,13 +88,14 @@ func GetID() int {
 /////////// Primary functions ////////////
 
 func PrimaryBroadcast(baddr *net.UDPAddr, data *Data) { // IMALIVE, oppdatere backup for alle
-	data.PriBroad = true
+	
 	//var temp Data
 	//udpAddr, err := net.ResolveUDPAddr("udp", "129.241.187.255:39998")
 	//checkError(err)
 	bconn, err := net.DialUDP("udp", nil, baddr)
 	checkError(err)
 	for {
+		data.PriBroad = true
 		fmt.Println("SENDER")
 		// WRITE
 		b,_ := json.Marshal(*data)
