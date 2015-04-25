@@ -220,6 +220,7 @@ func ElevatorControl(status *udp.Status){
 		
 func GetDestination(status *udp.Status) { //returnerer bare button, orderlist oppdateres
 	//time.Sleep(1*time.Second)
+	
 	for {	
 		
 		for floor := 0; floor < driver.N_FLOORS; floor++ {
@@ -338,7 +339,7 @@ func CostFunction(data *udp.Data) {
 			data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList = UpdateList(data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].OrderList, 0)
 		}
 	}*/
-	data.Lock.Lock()
+	
 	for k := 0; k < len((*data).PrimaryQ);k++ {
 		if udp.GetIndex((*data).PrimaryQ[k],data) != -1 {
 			//fmt.Println(udp.GetIndex(data.PrimaryQ[0], data))
@@ -350,7 +351,7 @@ func CostFunction(data *udp.Data) {
 			
 		}
 	}
-	data.Lock.Unlock()
+	
 	if len(UpList) > 0 || len(DownList) > 0{
 		//fmt.Println("status.UpList i CostFunction: ",data.Statuses[udp.GetIndex(data.PrimaryQ[0], data)].UpList)
 		fmt.Println("Lengden til statuses: ", len((*data).Statuses))
@@ -627,6 +628,7 @@ for up:=0; up<len(UpList);up++ {
 		}*/
 	}
 	}
+
 }
 
 
