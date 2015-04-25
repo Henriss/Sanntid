@@ -328,7 +328,7 @@ func CostFunction(data *udp.Data) {
 	var DownList []int
 	var UpList []int
 	for {
-	
+	/*
 	if(data.Statuses[udp.GetIndex(udp.GetID(), data)].Primary){
 		if len(data.Statuses) >1{	
 			for {
@@ -339,7 +339,7 @@ func CostFunction(data *udp.Data) {
 		}
 		
 	}
-	
+	*/
 	//fmt.Println("PrimaryQ er nå perfekt: ",data.PrimaryQ)
 	//fmt.Println("control 243, handled: ",handled)
 	handled = 0
